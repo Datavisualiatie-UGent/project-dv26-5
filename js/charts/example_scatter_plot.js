@@ -9,11 +9,7 @@ d3.csv("data/final_depression_dataset_1.csv")
         })
 
         const filtered = data.filter((d) => d["Working Professional or Student"] === "Student");
-        const agePerCGPA = filtered.toArray().map((d) => {
-            CGPA = d["CGPA"];
-            Age = d["Age"];
-            return {CGPA, Age}
-        })
+        const agePerCGPA = filtered.map(({ CGPA, Age, Gender }) => ({ CGPA, Age, Gender }));
 
         renderScatterPlot(agePerCGPA);
     })
@@ -25,25 +21,36 @@ function renderScatterPlot(data) {
     const width = 500 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-    const graph = d3.select(DOM.svg(width, height));
+    const xScale = d3.scaleLinear()
+        .domain([5, 10])
+        .range([0, width]);
 
-    graph.selectAll("circle")
+    const yScale = d3.scaleLinear()
+        .domain([18, 35])
+        .range([height, 0]);
+
+    const svg= d3
+        .select("#example_scatter_plot")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    svg.selectAll("circle")
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", d => d.CGPA)
-        .attr("cy", d => d.Age)
-        // .attr("r", d => Math.sqrt(height - d.Age));
+        .attr("cx", d => xScale(d.CGPA))
+        .attr("cy", d => yScale(d.Age))
+        .attr("r", d => 3)
+        .attr("fill", (d) => (d.Gender === "Male" ? "#4a90d9" : "#e87d9b"));
 
-    graph.selectAll("text")
-        .data(data)
-        .enter()
-        .append("text")
-        .text(d => d.CGPA + "," + d.Age)
-        .attr("x", d => d.CGPA)
-        .attr("y", d => d.Age)
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "11px")
-        .attr("fill", "hotpink");
+    svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+        .call(d3.axisLeft(yScale));
 
 }

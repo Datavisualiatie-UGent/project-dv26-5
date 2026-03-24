@@ -24,7 +24,7 @@ function renderBarChart(data) {
     const height = 400 - margin.top - margin.bottom;
 
     const svg = d3
-        .select("#chart")
+        .select("#example_bar_chart")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
