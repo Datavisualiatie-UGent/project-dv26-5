@@ -1,4 +1,7 @@
+document.addEventListener("DOMContentLoaded", () => {
+    renderBarChart();
+});
 
 document.addEventListener("DOMContentLoaded", () => {
-    renderChart();
+    renderScatterPlot();
 });
