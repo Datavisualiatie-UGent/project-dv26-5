@@ -1,11 +1,9 @@
-d3.csv("data/dsd.csv")
+d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function (data) {
-        // Convert Academic Pressure to number
         data.forEach((d) => {
             d["Academic Pressure"] = +d["Academic Pressure"];
         });
 
-        // Group by Gender and calculate averages
         const genders = ["Male", "Female"];
         const averages = genders.map((gender) => {
             const filtered = data.filter((d) => d["Gender"] === gender);
@@ -21,43 +19,36 @@ d3.csv("data/dsd.csv")
 
 
 function renderBarChart(data) {
-    // Dimensions
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 500 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-    // Create SVG
     const svg = d3
-        .select("#chart")
+        .select("#example_bar_chart")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // X scale
     const x = d3
         .scaleBand()
         .domain(data.map((d) => d.gender))
         .range([0, width])
         .padding(0.4);
 
-    // Y scale — start from 0, end slightly above max value
     const y = d3
         .scaleLinear()
         .domain([0, d3.max(data, (d) => d.avg) * 1.2])
         .range([height, 0]);
 
-    // X axis
     svg
         .append("g")
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(x));
 
-    // Y axis
     svg.append("g").call(d3.axisLeft(y).ticks(5));
 
-    // Y axis label
     svg
         .append("text")
         .attr("transform", "rotate(-90)")
@@ -66,7 +57,6 @@ function renderBarChart(data) {
         .attr("text-anchor", "middle")
         .text("Average Academic Pressure");
 
-    // Title
     svg
         .append("text")
         .attr("x", width / 2)
@@ -76,7 +66,6 @@ function renderBarChart(data) {
         .style("font-weight", "bold")
         .text("Average Academic Pressure by Gender");
 
-    // Bars
     svg
         .selectAll(".bar")
         .data(data)
@@ -89,7 +78,6 @@ function renderBarChart(data) {
         .attr("height", (d) => height - y(d.avg))
         .attr("fill", (d) => (d.gender === "Male" ? "#4a90d9" : "#e87d9b"));
 
-    // Value labels on top of bars
     svg
         .selectAll(".label")
         .data(data)
