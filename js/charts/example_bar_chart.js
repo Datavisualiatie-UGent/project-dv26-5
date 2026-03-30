@@ -1,4 +1,4 @@
-d3.csv("data/final_depression_dataset_1.csv")
+d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function (data) {
         data.forEach((d) => {
             d["Academic Pressure"] = +d["Academic Pressure"];
