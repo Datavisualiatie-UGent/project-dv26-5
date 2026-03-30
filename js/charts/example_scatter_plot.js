@@ -1,17 +1,17 @@
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function (data) {
         data.forEach((d) => {
-            d["CGPA"] = +d["CGPA"];
+            d["life_eval"] = +d["Life evaluation (3-year average)"];
         });
 
         data.forEach((d) => {
-            d["Age"] = +d["Age"];
+            d["log_gdp"] = +d["Explained by: Log GDP per capita"];
         })
 
-        const filtered = data.filter((d) => d["Working Professional or Student"] === "Student");
-        const agePerCGPA = filtered.map(({ CGPA, Age, Gender }) => ({ CGPA, Age, Gender }));
+        const filtered = data.filter((d) => d["Year"] >= 2019);
+        const life_per_gdp = filtered.map(({ life_eval, log_gdp }) => ({ life_eval, log_gdp }));
 
-        renderScatterPlot(agePerCGPA);
+        renderScatterPlot(life_per_gdp);
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
@@ -22,11 +22,11 @@ function renderScatterPlot(data) {
     const height = 400 - margin.top - margin.bottom;
 
     const xScale = d3.scaleLinear()
-        .domain([5, 10])
+        .domain([0, 10])
         .range([0, width]);
 
     const yScale = d3.scaleLinear()
-        .domain([18, 35])
+        .domain([0, 2.75])
         .range([height, 0]);
 
     const svg= d3
@@ -41,10 +41,35 @@ function renderScatterPlot(data) {
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", d => xScale(d.CGPA))
-        .attr("cy", d => yScale(d.Age))
+        .attr("cx", d => xScale(d.life_eval))
+        .attr("cy", d => yScale(d.log_gdp))
         .attr("r", d => 3)
-        .attr("fill", (d) => (d.Gender === "Male" ? "#4a90d9" : "#e87d9b"));
+        .attr("fill", d => "orange")
+        .attr("fill-opacity", d => 0.5)
+
+    svg
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -45)
+        .attr("text-anchor", "middle")
+        .text("Explained by Log GDP");
+
+    svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 45)
+        .attr("text-anchor", "middle")
+        .text("Life evaluation");
+
+    svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", -15)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("font-weight", "bold")
+        .text("Happiness score");
 
     svg.append("g")
         .attr("transform", `translate(0, ${height})`)
