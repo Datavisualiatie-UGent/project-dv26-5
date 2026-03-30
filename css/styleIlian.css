@@ -1,0 +1,17 @@
+body {
+    font-family: Calibri, Georgia, serif;
+    margin: 5rem;
+}
+.sphere {
+    fill: #EEEEEEEE;
+}
+
+.country {
+    fill: green;
+    stroke: #333;
+    stroke-width: 0.25;
+}
+
+.country:hover {
+ fill: red;
+}
