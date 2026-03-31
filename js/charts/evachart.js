@@ -6,7 +6,7 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
         });
 
         data.forEach((d) => {
-            d["country"] = d["Country name"];
+            d["country"] = d["Country name"].trim();
         })
 
         data.forEach((d) => {
@@ -23,8 +23,8 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
 
 function renderLinePlot(data) {
     //dimensies en marges voor grafiek zetten
-    const margin = {top: 30, left: 50, right: 100, bottom: 40};
-    const width = 600 - margin.left - margin.right;
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const width = 500 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     //maak de schalen en domeinen voor x en y
@@ -43,6 +43,8 @@ function renderLinePlot(data) {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    const linesGroup = svg.append("g");
 
     //x- en y-as toevoegen
     svg.append("g")
@@ -77,14 +79,63 @@ function renderLinePlot(data) {
     //titel maken
     svg.append("text")
         .attr("class", "chart-title")
-        .attr("x", margin.left - 50)
-        .attr("y", margin.top - 25)
-        .style("font-size", "24px")
-        .style("font-family", "sans-serif")
-        .text("Life evaluation per land doorheen de tijd");
+        .attr("x", margin.left)
+        .attr("y", margin.top - 44)
+        .style("font-size", "16px")
+        .style("font-weight", "bold")
+        .text("Life evaluation doorheen de tijd");
 
-    //zet alle data per land
+    //y-as label geven
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -45)
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text("Life evaluation");
+
+    //maak een tooltip
+    const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "white")
+        .style("border", "1px solid #ccc")
+        .style("padding", "5px")
+        .style("display", "none");
+
+    //zet alle data per land en maak de landen
     const grouped = d3.group(data, d => d.country);
+    const countries = Array.from(grouped.keys()).sort(d3.ascending);
+
+    //maak selectie ding om landen al dan niet te selecteren
+    const select = d3.select("#line_plot_eva")
+        .append("select")
+        .attr("multiple", true);
+
+    select.selectAll("option")
+        .data(["ALL", ...countries])
+        .enter()
+        .append("option")
+        .text(d => d)
+        .property("selected", true);
+
+    let selectedCountries = new Set(countries);
+
+    select.on("change", function () {
+
+        const selected = Array.from(this.selectedOptions).map(d => d.value);
+
+        if (selected.includes("ALL")) {
+            selectedCountries = new Set(countries);
+
+            // reselect everything visually
+            select.selectAll("option").property("selected", true);
+        } else {
+            selectedCountries = new Set(selected);
+        }
+
+        update();
+    });
 
     //kleurenschaal
     const color = d3.scaleOrdinal(d3.schemeCategory10)
@@ -95,25 +146,85 @@ function renderLinePlot(data) {
         .x(d => xScale(d.year))
         .y(d => yScale(d.life_eval));
 
+    function update() {
+
+        linesGroup.selectAll("*").remove();
+
+        grouped.forEach((values, key) => {
+
+            if (!selectedCountries.has(key)) return;
+
+            values.sort((a, b) => a.year - b.year);
+
+            //lijn met hover
+            linesGroup.append("path")
+                .datum(values)
+                .attr("fill", "none")
+                .attr("stroke", color(key))
+                .attr("stroke-width", 2)
+                .attr("d", line)
+                .on("mouseover", function (event) {
+                    tooltip.style("display", "block")
+                        .html(`<strong>${key}</strong>`);
+                })
+                .on("mousemove", function (event) {
+                    tooltip
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    tooltip.style("display", "none");
+                });
+
+            //punten met hover
+            linesGroup.selectAll(`.dot-${key}`)
+                .data(values)
+                .enter()
+                .append("circle")
+                .attr("cx", d => xScale(d.year))
+                .attr("cy", d => yScale(d.life_eval))
+                .attr("r", 4)
+                .attr("fill", color(key))
+                .on("mouseover", function (event, d) {
+                    tooltip.style("display", "block")
+                        .html(`
+                            <strong>${key}</strong><br>
+                            Year: ${d.year.getFullYear()}<br>
+                            Value: ${d.life_eval.toFixed(2)}
+                        `);
+                })
+                .on("mousemove", function (event) {
+                    tooltip
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    tooltip.style("display", "none");
+                });
+        });
+    }
+
+    update();
+
     //maak lijn en bolletjes per land
-    grouped.forEach((values, key) => {
+    // grouped.forEach((values, key) => {
         //sorteren
-        values.sort((a, b) => a.year - b.year);
+       // values.sort((a, b) => a.year - b.year);
         //maak een lijne
-        svg.append("path")
-            .datum(values)
-            .attr("fill", "none")
-            .attr("stroke", color(key))
-            .attr("stroke-width", 1.5)
-            .attr("d", line);
+       // svg.append("path")
+          //  .datum(values)
+           // .attr("fill", "none")
+            //.attr("stroke", color(key))
+            ///.attr("stroke-width", 1.5)
+            //.attr("d", line);
         //voeg bolletjes toe voor elke life evaluation
-        svg.selectAll(`.dot-${key}`)
-            .data(values)
-            .enter()
-            .append("circle")
-            .attr("cx", d => xScale(d.year))
-            .attr("cy", d => yScale(d.life_eval))
-            .attr("r", 3)
-            .attr("fill", color(key));
-    });
+        //svg.selectAll(`.dot-${key}`)
+         //   .data(values)
+          //  .enter()
+           // .append("circle")
+           // .attr("cx", d => xScale(d.year))
+           // .attr("cy", d => yScale(d.life_eval))
+           // .attr("r", 3)
+           // .attr("fill", color(key));
+   // });
 }
