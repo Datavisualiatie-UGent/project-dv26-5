@@ -22,6 +22,14 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .catch((error) => console.error("Error loading CSV:", error));
 
 function renderLinePlot(data) {
+    //om te zorgen dat alles mooi naast elkaar staat
+    d3.select("#line_plot_eva").html("");
+    const container = d3.select("#line_plot_eva")
+        .append("div")
+        .style("display", "flex")
+        .style("gap", "20px")
+        .style("align-items", "flex-start");
+
     //dimensies en marges voor grafiek zetten
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 500 - margin.left - margin.right;
@@ -35,29 +43,36 @@ function renderLinePlot(data) {
         .domain([0,8])
         .range([height, 0]); //omdat de y-as omgedraaid staat, moet 0 achteraan
 
+    //voor layout selectie - grafiek - legende te krijgen
+    const controls = container
+        .append("div")
+        .style("margin-right", "20px");
+
     //maak het svg element voor de grafiek
-    const svg = d3
-        .select("#line_plot_eva")
+    const svg = container
         .append("svg")
+        .style("flex-shrink", 0)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+
+    const chart = svg
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    const linesGroup = svg.append("g");
+    const linesGroup = chart.append("g");
 
     //x- en y-as toevoegen
-    svg.append("g")
+    chart.append("g")
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(xScale)
             .ticks(d3.timeYear.every(1))
             .tickFormat(d3.timeFormat("%Y")));
 
-    svg.append("g")
+    chart.append("g")
         .call(d3.axisLeft(yScale));
 
     //gridlines toevoegen
-    svg.selectAll("xGrid")
+    chart.selectAll("xGrid")
         .data(xScale.ticks().slice(1))
         .join("line")
         .attr("x1", d => xScale(d))
@@ -66,7 +81,7 @@ function renderLinePlot(data) {
         .attr("y2", height)
         .attr("stroke", "#e0e0e0")
         .attr("stroke-width", 0.5);
-    svg.selectAll("yGrid")
+    chart.selectAll("yGrid")
         .data(yScale.ticks())
         .join("line")
         .attr("x1",0)
@@ -77,7 +92,7 @@ function renderLinePlot(data) {
         .attr("stroke-width", 0.5);
 
     //titel maken
-    svg.append("text")
+    chart.append("text")
         .attr("class", "chart-title")
         .attr("x", margin.left)
         .attr("y", margin.top - 44)
@@ -86,7 +101,7 @@ function renderLinePlot(data) {
         .text("Life evaluation doorheen de tijd");
 
     //y-as label geven
-    svg.append("text")
+    chart.append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
         .attr("y", -45)
@@ -107,34 +122,77 @@ function renderLinePlot(data) {
     const grouped = d3.group(data, d => d.country);
     const countries = Array.from(grouped.keys()).sort(d3.ascending);
 
-    //maak selectie ding om landen al dan niet te selecteren
-    const select = d3.select("#line_plot_eva")
-        .append("select")
-        .attr("multiple", true);
-
-    select.selectAll("option")
-        .data(["ALL", ...countries])
-        .enter()
-        .append("option")
-        .text(d => d)
-        .property("selected", true);
-
-    let selectedCountries = new Set(countries);
-
-    select.on("change", function () {
-
-        const selected = Array.from(this.selectedOptions).map(d => d.value);
-
-        if (selected.includes("ALL")) {
+    //selecteer alles knop
+    controls.append("button")
+        .text("Select All")
+        .on("click", () => {
             selectedCountries = new Set(countries);
+            update();
+            updateList(searchInput.property("value"));
+        });
 
-            // reselect everything visually
-            select.selectAll("option").property("selected", true);
-        } else {
-            selectedCountries = new Set(selected);
-        }
+    //deselecteer alles knop
+    controls.append("button")
+        .text("Clear All")
+        .on("click", () => {
+            selectedCountries.clear();
+            update();
+            updateList(searchInput.property("value"));
+        });
 
-        update();
+    const searchInput = controls.append("input")
+        .attr("type", "text")
+        .attr("placeholder", "Search country...")
+        .style("display", "block")
+        .style("margin-bottom", "5px");
+
+
+    //maak selectie ding om landen al dan niet te selecteren
+    const list = controls.append("div")
+        .style("border", "1px solid #ccc")
+        .style("height", "200px")
+        .style("overflow-y", "scroll")
+        .style("padding", "5px");
+
+    let selectedCountries = new Set();
+
+    function updateList(filterText = "") {
+        const filteredCountries = countries.filter(c =>
+            c.toLowerCase().includes(filterText.toLowerCase())
+        );
+
+        const items = list.selectAll(".country-item")
+            .data(filteredCountries, d => d);
+
+        const enter = items.enter()
+            .append("div")
+            .attr("class", "country-item")
+            .style("cursor", "pointer")
+            .style("padding", "2px");
+
+        const merged = enter.merge(items);
+
+        merged
+            .text(d => d)
+            .style("background", d =>
+                selectedCountries.has(d) ? "#d3e5ff" : "transparent"
+            )
+            .on("click", function (event, d) {
+                if (selectedCountries.has(d)) {
+                    selectedCountries.delete(d);
+                } else {
+                    selectedCountries.add(d);
+                }
+
+                update();
+                updateList(searchInput.property("value"));
+            });
+
+        items.exit().remove();
+    }
+
+    searchInput.on("input", function () {
+        updateList(this.value);
     });
 
     //kleurenschaal
@@ -202,29 +260,50 @@ function renderLinePlot(data) {
                     tooltip.style("display", "none");
                 });
         });
+        updateList();
+        updateLegend();
+    }
+
+    //legende maken wanneer meerdere landen geselecteerd zijn
+    const legendContainer = container
+        .append("div")
+        .style("margin-left", "20px")
+        .style("max-height", (height + margin.bottom) + "px")   //splitst in kolommen die niet verder gaan dan
+        .style("column-width", "120px")       //lengte van de grafiek
+        .style("column-gap", "10px");
+
+    function updateLegend() {
+        const selected = Array.from(selectedCountries);
+
+        const items = legendContainer.selectAll(".legend-item")
+            .data(selected, d => d);
+
+        const enter = items.enter()
+            .append("div")
+            .attr("class", "legend-item")
+            .style("display", "flex")
+            .style("align-items", "center")
+            .style("margin-bottom", "5px")
+            .style("break-inside", "avoid");
+
+        enter.append("div")
+            .style("width", "10px")
+            .style("height", "10px")
+            .style("margin-right", "5px");
+
+        enter.append("span")
+            .style("font-size", "12px");
+
+        const merged = enter.merge(items);
+
+        merged.select("div")
+            .style("background-color", d => color(d));
+
+        merged.select("span")
+            .text(d => d);
+
+        items.exit().remove();
     }
 
     update();
-
-    //maak lijn en bolletjes per land
-    // grouped.forEach((values, key) => {
-        //sorteren
-       // values.sort((a, b) => a.year - b.year);
-        //maak een lijne
-       // svg.append("path")
-          //  .datum(values)
-           // .attr("fill", "none")
-            //.attr("stroke", color(key))
-            ///.attr("stroke-width", 1.5)
-            //.attr("d", line);
-        //voeg bolletjes toe voor elke life evaluation
-        //svg.selectAll(`.dot-${key}`)
-         //   .data(values)
-          //  .enter()
-           // .append("circle")
-           // .attr("cx", d => xScale(d.year))
-           // .attr("cy", d => yScale(d.life_eval))
-           // .attr("r", 3)
-           // .attr("fill", color(key));
-   // });
 }
