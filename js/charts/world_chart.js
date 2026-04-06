@@ -3,7 +3,6 @@ function renderWorldChart(){
     const width = 500 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-
     const svg_base = d3.select("#world_chart")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -18,61 +17,52 @@ function renderWorldChart(){
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const g = main_container.append("g");
-
     const projection = d3.geoMercator()
-        .fitSize([width, height], { type: "Sphere" });
+        .scale(80)
+        .translate([width / 2 -15, height / 1.5]);
 
     const pathGenerator = d3.geoPath().projection(projection);
-
-    g.append("path")
-        .datum({ type: "Sphere" })
-        .attr("class", "background")
-        .attr("d", pathGenerator)
-        .attr("fill", "#EEEEEE")
-        .attr("stroke", "none");
-
     const zoom = d3.zoom()
-        .scaleExtent([1.55, 7])
-        .translateExtent([[-width, -height], [width * 2, height * 2]])
-        .extent([[50,0], [width, height]])
+        .scaleExtent([1, 8])
+        .translateExtent([[-30, -20], [width + 100, height + 100]])
         .on("zoom", (event) => {
-            if (event.transform.k <= 1.55) {
-                event.transform.x = - 125;
-                event.transform.y = -50;
-            } else{
-                const xMin = width * (1 - event.transform.k);
-                const yMin = height * (1 - event.transform.k);
-
-                event.transform.x = Math.max(xMin, Math.min(0, event.transform.x));
-                event.transform.y = Math.max(yMin, Math.min(0, event.transform.y));
+            const { transform } = event;
+            if (transform.k <= 1) {
+                g.attr("transform", "translate(0,0) scale(1)");
+            } else {
+                g.attr("transform", transform);
             }
-            g.attr('transform', event.transform)
+            g.selectAll('.country').style("stroke-width", 0.5 / transform.k);
         });
+
     svg_base.call(zoom);
-
-    svg_base.call(zoom.transform, d3.zoomIdentity
-        .translate( width / 2, height / 2)
-        .scale(1.55)
-        .translate(- 125, -50 )
-    );
-
 
     Promise.all([
         d3.tsv('https://unpkg.com/world-atlas@1.1.4/world/110m.tsv'),
         d3.json('https://unpkg.com/world-atlas@1.1.4/world/50m.json')
-    ]).then(([tsvData, topoJSONdata]) =>{
+    ]).then(([tsvData, topoJSONdata]) => {
+
         const countryName = {};
         tsvData.forEach(d => {
-            countryName[d.iso_n3] = d.name
-        })
+            countryName[d.iso_n3] = d.name;
+        });
+
         const countries = topojson.feature(topoJSONdata, topoJSONdata.objects.countries);
-        g.selectAll('.country').data(countries.features)
-            .enter().append('path')
-                .attr('class', 'country')
-                .attr('d', pathGenerator)
+
+        g.selectAll('.country')
+            .data(countries.features)
+            .enter()
+            .append('path')
+            .attr('class', 'country')
+            .attr('d', pathGenerator)
+            .attr('fill', '#2c3e50')
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 0.5)
             .append('title')
-                .text(d => countryName[d.id]);
-    })
+            .text(d => countryName[d.id] || "Unknown");
+
+        console.log("Map successfully rendered.");
+    }).catch(err => console.error("Loading error:", err));
 
 }
 renderWorldChart();
