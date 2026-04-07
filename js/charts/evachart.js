@@ -23,8 +23,8 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
 
 function renderLinePlot(data) {
     //om te zorgen dat alles mooi naast elkaar staat
-    d3.select("#line_plot_eva").html("");
-    const container = d3.select("#line_plot_eva")
+    d3.select("#line_plot_landen").html("");
+    const container = d3.select("#line_plot_landen")
         .append("div")
         .style("display", "flex")
         .style("gap", "20px")
