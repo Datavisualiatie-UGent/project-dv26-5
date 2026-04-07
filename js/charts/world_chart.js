@@ -111,11 +111,10 @@ function renderWorldChart(){
         "united states": "united states of america",
         "us": "united states of america",
         "south korea": "korea",
-        "north korea": "dem. rep. korea",
-        "uk": "united kingdom",
-        "türkiye": "turkey",
+        "Côte d'Ivoire": "Côte d'Ivoire",
+        "central african republic": "central african rep.",
         "congo (brazzaville)": "congo",
-        "congo (kinshasa)": "dem. rep. congo"
+        "DR Congo": "dem. rep. congo"
     };
 
     Promise.all([
