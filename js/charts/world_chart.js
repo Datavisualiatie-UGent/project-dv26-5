@@ -146,8 +146,18 @@ function renderWorldChart(){
         });
 
         csvData.forEach(d => {
+            let rawName = d["Country name"];
+            if (!rawName) return;
+            if (rawName.includes("Ivoire")) {
+                console.log("Found Ivory Coast in CSV! Target ID:", nameToId["Côte d'Ivoire"]);
+            }
+            let name = rawName.toLowerCase().trim();
+
+            if (/cote d'ivoire/i.test(name) || /ivory coast/i.test(name)) {
+                name = "cote d'ivoire";
+            }
+
             const year = d["Year"];
-            const name = d["Country name"]?.toLowerCase().trim();
             const id = nameToId[ name];
 
             if (id) {
@@ -155,6 +165,7 @@ function renderWorldChart(){
                 dataByYear[year][id] = +d["Life evaluation (3-year average)"];
             }
         });
+
 
         const countries = topojson.feature(topoJSONdata, topoJSONdata.objects.countries);
 
@@ -194,8 +205,7 @@ function renderWorldChart(){
         countries.select("title")
             .text(d => {
                 const name = idToName[d.id] || "Unknown Country";
-                const val = currentYearData[d.id] ? currentYearData[d.id].toFixed(2) : "No Data";
-                return `${name}\nScore: ${val}`;
+                return `${name}`;
             });
     }
 
