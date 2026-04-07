@@ -6,11 +6,7 @@ body {
     fill: #EEEEEEEE;
 }
 
-.country {
-    fill: green;
-    stroke: #333;
-    stroke-width: 0.25;
-}
+
 
 .country:hover {
  fill: red;
