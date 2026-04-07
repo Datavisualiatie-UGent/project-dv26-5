@@ -35,13 +35,28 @@ function renderScatterPlot(data, yCol) {
         .domain(yCol.domain)
         .range([height, 0]);
 
-    const svg = d3
-        .select("#example_scatter_plot")
-        .append("svg")
+    const plot = d3.select("#example_scatter_plot").append("div");
+
+    const svg = plot.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    svg.append("g")
+        .attr("class", "grid")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale)
+            .tickSize(-height)
+            .tickFormat("")
+        );
+
+    svg.append("g")
+        .attr("class", "grid")
+        .call(d3.axisLeft(yScale)
+            .tickSize(-width)
+            .tickFormat("")
+        );
 
     svg.selectAll("circle")
         .data(data)
@@ -76,9 +91,8 @@ function renderScatterPlot(data, yCol) {
     const tooltip = svg.append("g")
         .attr("class", "tooltip")
         .style("opacity", 0);
-
-    const tooltipText = tooltip.append("text");
     const tooltipRect = tooltip.append("rect");
+    const tooltipText = tooltip.append("text");
 
     svg.append("text")
         .attr("transform", "rotate(-90)")
@@ -112,39 +126,49 @@ function renderScatterPlot(data, yCol) {
 
 function renderPlots(mapped) {
     const yColumns = [
-        { key: "log_gdp",       label: "Log GDP per capita",              domain: [0, 2.75] },
-        { key: "social_support",label: "Social support",                  domain: [0, 2.75] },
-        { key: "healthy_life",  label: "Healthy life expectancy",         domain: [0, 2.75] },
-        { key: "freedom",       label: "Freedom to make life choices",    domain: [0, 2.75] },
-        { key: "generosity",    label: "Generosity",                      domain: [0, 2.75] },
-        { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 2.75] },
+        { key: "log_gdp",       label: "Log GDP per capita",              domain: [0, 2.75]},
+        { key: "social_support",label: "Social support",                  domain: [0, 2.75]},
+        { key: "healthy_life",  label: "Healthy life expectancy",         domain: [0, 2.75]},
+        { key: "freedom",       label: "Freedom to make life choices",    domain: [0, 2.75]},
+        { key: "generosity",    label: "Generosity",                      domain: [0, 2.75]},
+        { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 2.75]},
     ];
 
     const container = d3.select("#example_scatter_plot");
 
-    const controls = container.insert("div", "svg")
-        .style("margin-bottom", "8px");
+    const sidebar = container.append("div")
+        .attr("class", "sidebar");
 
-    controls.append("label")
-        .attr("for", "y-axis-select")
-        .style("margin-right", "8px")
-        .text("Y-axis:");
+    sidebar.append("div")
+        .text("Y-axis")
+        .style("font-weight", "bold")
+        .style("margin-bottom", "6px")
+        .style("font-size", "12px")
+        .style("text-transform", "uppercase")
+        .style("letter-spacing", "0.05em")
+        .style("color", "#555");
 
-    const select = controls.append("select")
-        .attr("id", "y-axis-select");
+    const list = sidebar.append("div")
+        .style("display", "flex")
+        .style("gap", "8px")
+        .style("flex-wrap", "wrap")
+        .style("flex-direction", "column");
 
-    select.selectAll("option")
+    let selected = yColumns[0];
+
+    const items = list.selectAll("span")
         .data(yColumns)
         .enter()
-        .append("option")
-        .attr("value", d => d.key)
-        .text(d => d.label);
+        .append("span")
+        .text(d => d.label)
+        .style("cursor", "pointer")
+        .style("font-weight", d => d === selected ? "bold" : "normal")
+        .on("click", function (event, d) {
+            selected = d;
+            items.style("font-weight", c => c === selected ? "bold" : "normal");
+            d3.select("#example_scatter_plot svg").remove();
+            renderScatterPlot(mapped, selected);
+        });
 
-    renderScatterPlot(mapped, yColumns[0]);
-
-    select.on("change", function () {
-        const selected = yColumns.find(c => c.key === this.value);
-        d3.select("#example_scatter_plot svg").remove();
-        renderScatterPlot(mapped, selected);
-    });
+    renderScatterPlot(mapped, selected);
 }

@@ -3,6 +3,22 @@ body {
     margin: 5rem;
 }
 
+#example_scatter_plot div {
+    padding: 0.5em;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    min-width: 120px;
+    background: #fafafa;
+    float: left;
+}
+
 .tooltip {
     opacity: 1;
     transition: opacity 0.2s ease;
@@ -23,4 +39,13 @@ body {
 
 .tooltip-group:hover .tooltip {
     opacity: 0;
+}
+
+.grid line {
+    stroke: #e0e0e0;
+    stroke-dasharray: 3,3;
+}
+
+.grid path {
+    stroke: none;
 }
