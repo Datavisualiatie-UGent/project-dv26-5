@@ -102,7 +102,6 @@ function renderWorldChart(){
 
         g.selectAll(".map-popup").remove();
 
-        const [[p0, s0], [p1, s1]] = pathGenerator.bounds(d);
         const [p, s] = pathGenerator.centroid(geometry);
         const popupGroup = g.append("g")
             .datum(d)
