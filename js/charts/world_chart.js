@@ -209,7 +209,7 @@ function renderWorldChart(){
         const maxYear = d3.max(years);
         currentYear = maxYear
 
-        const slider = d3.select("#year_slider")
+        d3.select("#year_slider")
             .attr("min", minYear)
             .attr("max", maxYear)
             .attr("value", maxYear)
