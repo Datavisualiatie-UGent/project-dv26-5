@@ -72,29 +72,31 @@ function renderLinePlot(data) {
         .call(d3.axisLeft(yScale));
 
     //gridlines toevoegen
-    chart.selectAll("xGrid")
+    chart.append("g")
+        .attr("class", "grid")
+        .selectAll("line")
         .data(xScale.ticks().slice(1))
         .join("line")
         .attr("x1", d => xScale(d))
         .attr("x2", d => xScale(d))
         .attr("y1", 0)
-        .attr("y2", height)
-        .attr("stroke", "#e0e0e0")
-        .attr("stroke-width", 0.5);
-    chart.selectAll("yGrid")
+        .attr("y2", height);
+
+    chart.append("g")
+        .attr("class", "grid")
+        .selectAll("line")
         .data(yScale.ticks())
         .join("line")
-        .attr("x1",0)
+        .attr("x1", 0)
         .attr("x2", width)
         .attr("y1", d => yScale(d))
-        .attr("y2", d => yScale(d))
-        .attr("stroke", "#e0e0e0")
-        .attr("stroke-width", 0.5);
+        .attr("y2", d => yScale(d));
 
     //titel maken
     chart.append("text")
         .attr("class", "chart-title")
-        .attr("x", margin.left)
+        .attr("x", width / 2)
+        .attr("text-anchor", "middle")
         .attr("y", margin.top - 44)
         .style("font-size", "16px")
         .style("font-weight", "bold")
@@ -110,13 +112,21 @@ function renderLinePlot(data) {
         .text("Life evaluation");
 
     //maak een tooltip
-    const tooltip = d3.select("body")
-        .append("div")
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("border", "1px solid #ccc")
-        .style("padding", "5px")
+    const tooltipGroup = chart.append("g")
+        .attr("class", "tooltip-group")
+        .style("pointer-events", "none")
         .style("display", "none");
+
+    const tooltip = tooltipGroup.append("g")
+        .attr("class", "tooltip");
+
+    tooltip.append("rect")
+        .attr("width", 120)
+        .attr("height", 50);
+
+    const tooltipText = tooltip.append("text")
+        .attr("x", 5)
+        .attr("y", 0);
 
     //zet alle data per land en maak de landen
     const grouped = d3.group(data, d => d.country);
@@ -221,43 +231,73 @@ function renderLinePlot(data) {
                 .attr("stroke", color(key))
                 .attr("stroke-width", 2)
                 .attr("d", line)
+                .style("cursor", "pointer")
                 .on("mouseover", function (event) {
-                    tooltip.style("display", "block")
-                        .html(`<strong>${key}</strong>`);
+                    tooltipGroup.style("display", null);
+                    tooltipGroup.raise();
+
+                    // clear previous content
+                    tooltipText.selectAll("*").remove();
+
+                    // only country name
+                    tooltipText.append("tspan")
+                        .attr("x", 5)
+                        .attr("y", 15)
+                        .text(key);
+
+                    // resize box
+                    const bbox = tooltipText.node().getBBox();
+                    tooltip.select("rect")
+                        .attr("width", bbox.width + 12)
+                        .attr("height", bbox.height + 10);
                 })
                 .on("mousemove", function (event) {
-                    tooltip
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY + 10) + "px");
+                    const [x, y] = d3.pointer(event, chart.node());
+                    tooltipGroup.attr("transform", `translate(${x + 10}, ${y + 10})`);
                 })
                 .on("mouseout", function () {
-                    tooltip.style("display", "none");
+                    tooltipGroup.style("display", "none");
                 });
 
             //punten met hover
-            linesGroup.selectAll(`.dot-${key}`)
+            linesGroup.selectAll(null)
                 .data(values)
                 .enter()
                 .append("circle")
                 .attr("cx", d => xScale(d.year))
                 .attr("cy", d => yScale(d.life_eval))
-                .attr("r", 4)
+                .attr("r", 5)
+                .style("cursor", "pointer")
                 .attr("fill", color(key))
                 .on("mouseover", function (event, d) {
-                    tooltip.style("display", "block")
-                        .html(`
-                            <strong>${key}</strong><br>
-                            Year: ${d.year.getFullYear()}<br>
-                            Value: ${d.life_eval.toFixed(2)}
-                        `);
+                    tooltipGroup.style("display", null);
+                    tooltipGroup.raise();
+                    tooltipText.selectAll("*").remove();
+
+                    const lines = [
+                        key,
+                        `Year: ${d.year.getFullYear()}`,
+                        `Value: ${d.life_eval.toFixed(2)}`
+                    ];
+
+                    lines.forEach((line, i) => {
+                        tooltipText.append("tspan")
+                            .attr("x", 5)
+                            .attr("y", 15 + i * 15)
+                            .text(line);
+                    });
+
+                    const bbox = tooltipText.node().getBBox();
+                    tooltip.select("rect")
+                        .attr("width", bbox.width + 12)
+                        .attr("height", bbox.height + 10);
                 })
                 .on("mousemove", function (event) {
-                    tooltip
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY + 10) + "px");
+                    const [x, y] = d3.pointer(event, chart.node());
+                    tooltipGroup.attr("transform", `translate(${x + 10}, ${y + 10})`);
                 })
                 .on("mouseout", function () {
-                    tooltip.style("display", "none");
+                    tooltipGroup.style("display", "none");
                 });
         });
         updateList();
@@ -304,6 +344,5 @@ function renderLinePlot(data) {
 
         items.exit().remove();
     }
-
     update();
 }
