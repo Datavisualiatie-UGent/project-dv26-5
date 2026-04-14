@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Happiness Report</title>
+  <link rel="stylesheet" href="css/styleeva.css" />
+</head>
+<body>
+  <div class = "hero">
+    <nav>
+      <img src="images/whr.png" class="logo">
+      <ul>
+        <li><a href="#" class="nav-link active" onclick="showPage('achtergrond')">Achtergrond</a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('variabelen')">Variabelen</a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('data')">Data</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- dit zijn de verschillende pagina's waarin je per pagina alles kan noteren wat daar hoort -->
+  <div id="achtergrond" class="page active">
+    <p style="font-family: Calibri, Georgia, serif">
+      Het World Happiness Report is een jaarlijks rapport dat uitgebreid overzicht biedt van hoe gelukkig
+      mensen zich voelen over de hele wereld. Dit rapport meet geluk aan de hand van verschillende indicatoren
+      zoals onder andere economische cijfers, sociale ondersteuning en vrijheid. Het rapport baseert zich op
+      gegevens van onder andere de World Health Organization en de World Bank, en combineert subjectieve
+      evaluaties van levenskwaliteit met objectieve indicatoren. Op deze manier ontstaat er een beeld van wat
+      geluk betekent in verschillende culturele en economische contexten. Het doel van dit project is om deze
+      complexe gegevens inzichtelijk te maken door middel van datavisualisatie. Daarnaast richt dit project
+      zich op het beantwoorden van volgende onderzoeksvragen:
+    </p>
+    <ul>
+      <li>Welke landen behoren tot de gelukkigste ter wereld? Hoe stabiel zijn deze posities doorheen de tijd?</li>
+      <li>Welke factoren zijn het meest bepalend voor het ervaren van geluk?</li>
+      <li>Zijn er verschillen zichtbaar tussen regio’s en/of continenten?</li>
+    </ul>
+    <p>
+      Belangrijk om nog op te merken is dat niet alle landen data hebben. Sommige landen hebben geen data,
+      terwijl anderen wel data hebben maar niet voor alle jaren.
+    </p>
+  </div>
+
+  <div id="variabelen" class="page">
+    <p>De variabelen die gebruikt worden in de datavisualisaties worden hier verklaart.</p>
+    <ul>
+      <li><b>Year:</b> We gebruiken de data van de jaren 2019 - 2025</li>
+      <li><b>Rank:</b> De positie van de landen op basis van life evaluation in dat bepaald jaar</li>
+      <li><b>Country name:</b> De namen van de landen</li>
+      <li><b>Life evaluation (3 year-average):</b> De landen worden gerangschikt volgens hun score van de
+        voorbije 3 jaar omdat dit dan een grotere hoeveelheid data is en dus meer precieze schatters
+        (bv: de ranking van het jaar 2025 gebruikt de gemiddelde scores van de jaren 2022, 2023 en 2024)</li>
+      <li><b style="color: lightsteelblue  ">Log GDP per capita:</b> Deze variabele omvat de PPP (Purchasing
+        Power Parity) en dat is een manier om economische cijfers tussen landen eerlijk te vergelijken
+        omdat er rekening wordt gehouden met prijsverschillen. Alles in deze variabele is omgerekend naar
+        een standaard munteenheid en dit is de dollar vastgezet op het niveau van 2017. Op deze manier
+        wordt inflatie eruit gehaald en kan je dus correcte conclusies maken. De data hier is afkomstig
+        van de World Development Indicators by the World Bank</li>
+      <li><b style="color: lightsteelblue">Social support:</b> Deze variabele verklaart of, als je in de
+        problemen zit, je dan vrienden/kennissen hebt waarop je kan rekenen om je te helpen</li>
+      <li><b style="color: lightsteelblue">Healthy life expectancy:</b> Deze variabele verklaart het
+        gemiddelde aantal jaar dat een persoon kan leven in volledige gezondheid (dus zonder ziektes).
+        De data hierin is afkomstig van de World Health Organisation Global Health Observatory en is
+        gebaseerd op de meest recente data namelijk deze van 2021</li>
+      <li><b style="color: lightsteelblue">Freedom to make life decisions:</b> Deze variabele verklaart of
+        de personen al dan niet gelukkig zijn met hun vrijheid om keuzes te maken over wat ze doen met
+        hun leven</li>
+      <li><b style="color: lightsteelblue">Generosity:</b> Deze variabele polst naar of mensen geld
+        gedoneerd hebben aan een goed doel in de laatste maand</li>
+      <li><b style="color: lightsteelblue">Perception of corruption:</b> Deze variabele bevat het
+        gemiddelde van antwoorden op de 2 vragen: “Is corruptie wijd verspreid binnen de overheid of niet?”
+        en “Is corruptie wijd verspreid in het bedrijfsleven of niet?”. Als er data voor de corruptie in de
+        overheid ontbrak, dan werd enkel de data van de corruptie in het bedrijfsleven gebruikt</li>
+    </ul>
+    <p>Hierbij geven alle <span style="color: lightsteelblue">blauwe</span> variabelen telkens weer hoeveel invloed deze specifieke variabele heeft op
+      de life evaluation score </p>
+  </div>
+
+  <div id="data" class="page">
+    <div id="example_scatter_plot"></div>
+    <div id="line_plot_landen"></div>
+  </div>
+
+  <!--dit is een functie die ervoor zorgt dat enkel de pagina zichtbaar is op welke je geklikt hebt-->
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+      });
+      document.getElementById(pageId).classList.add("active");
+    }
+  </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="js/charts/example_scatter_plot.js"></script>
+<script src="js/charts/evachart.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
