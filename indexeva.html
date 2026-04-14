@@ -10,16 +10,18 @@
 <body>
   <div class = "hero">
     <nav>
-      <img src="images/whr.png" class="logo">
+      <img src="images/whr.png" class="logo" alt="Logo World Happiness Report">
       <ul>
         <li><a href="#" class="nav-link active" onclick="showPage('achtergrond')">Achtergrond</a></li>
         <li><a href="#" class="nav-link" onclick="showPage('variabelen')">Variabelen</a></li>
         <li><a href="#" class="nav-link" onclick="showPage('data')">Data</a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('landen')">Landen</a></li>
       </ul>
     </nav>
   </div>
 
   <!-- dit zijn de verschillende pagina's waarin je per pagina alles kan noteren wat daar hoort -->
+  <!--pagina voor achtergrondinformatie-->
   <div id="achtergrond" class="page active">
     <p style="font-family: Calibri, Georgia, serif">
       Het World Happiness Report is een jaarlijks rapport dat uitgebreid overzicht biedt van hoe gelukkig
@@ -27,30 +29,53 @@
       zoals onder andere economische cijfers, sociale ondersteuning en vrijheid. Het rapport baseert zich op
       gegevens van onder andere de World Health Organization en de World Bank, en combineert subjectieve
       evaluaties van levenskwaliteit met objectieve indicatoren. Op deze manier ontstaat er een beeld van wat
-      geluk betekent in verschillende culturele en economische contexten. Het doel van dit project is om deze
-      complexe gegevens inzichtelijk te maken door middel van datavisualisatie. Daarnaast richt dit project
-      zich op het beantwoorden van volgende onderzoeksvragen:
+      geluk betekent in verschillende culturele en economische contexten. </p>
+
+    <p style="font-family: Calibri, Georgia, serif">
+      De happiness ranking is gebaseerd op één vraag, genaamd de Cantril Ladder:
     </p>
-    <ul>
-      <li>Welke landen behoren tot de gelukkigste ter wereld? Hoe stabiel zijn deze posities doorheen de tijd?</li>
-      <li>Welke factoren zijn het meest bepalend voor het ervaren van geluk?</li>
-      <li>Zijn er verschillen zichtbaar tussen regio’s en/of continenten?</li>
-    </ul>
+    <p style=" text-align: center; font-family: Calibri, Georgia, serif">
+      <i>Beeld je een ladder in met treden die genummerd zijn met 0 onderaan en 10 helemaal bovenaan. De top van
+      de ladder stelt het best mogelijke leven voor en de onderste trede het slechtst mogelijke leven voor u.
+      Op welk niveau van de ladder vindt u dat u momenteel staat?</i>
+    </p>
+    <p>
+      Deze vraag is universeel en democratisch. De Cantril Ladder stimuleert mensen om een eigen perspectief
+      in te nemen over waar ze nu staan in hun leven. Dit gebeurt onafhankelijk van hun cultuur of achtergrond.
+      Verder gebruikt de vraag geen concepten zoals geluk, welzijn of tevredenheid zodat dit makkelijk te
+      begrijpen is in verschillende talen. Verder worden voor deze data life evaluations gebruikt. Dit wordt
+      gedaan omdat emoties eerder een momentopname beschrijven en verschillen van dag tot dag. Ook kunnen emoties
+      sterk beïnvloed worden. Een life evaluation omvat de gebeurtenissen van het leven in zijn geheel.
+    </p>
     <p>
       Belangrijk om nog op te merken is dat niet alle landen data hebben. Sommige landen hebben geen data,
-      terwijl anderen wel data hebben maar niet voor alle jaren.
+      terwijl anderen wel data hebben maar niet voor alle jaren. Dit is mede doordat sommige populaties klein
+      zijn en te veel geld kosten om elk jaar data te verzamelen. Om een meer correcte inschatting te maken
+      van life evaluation per land, wordt er altijd data gebruikt van de afgelopen drie jaren. Dus voor de
+      rankings uit 2025 zijn de data van 2022 tot 2024 gebruikt.
     </p>
+    <p style="font-family: Calibri, Georgia, serif">
+      Het doel van dit project is om deze complexe gegevens inzichtelijk te maken door middel van
+      datavisualisatie. Daarnaast richt dit project zich op het beantwoorden van volgende onderzoeksvragen:
+    </p>
+    <ul>
+      <li>Welke landen behoren tot de gelukkigste ter wereld? Hoe stabiel zijn deze posities doorheen
+        de tijd?</li>
+      <li>Welke factoren zijn het meest bepalend voor het ervaren van geluk?</li>
+      <li>Zijn er verschillen zichtbaar tussen regio’s en/of continenten?</li>
+      <li>Is er een impact te zien van de coronacrisis op het geluk in de landen?</li>
+    </ul>
   </div>
 
+  <!--pagina voor verklaring van de gebruikte variabelen-->
   <div id="variabelen" class="page">
-    <p>De variabelen die gebruikt worden in de datavisualisaties worden hier verklaart.</p>
+    <p>De variabelen die gebruikt worden in de datavisualisaties worden hier verklaard.</p>
     <ul>
       <li><b>Year:</b> We gebruiken de data van de jaren 2019 - 2025</li>
       <li><b>Rank:</b> De positie van de landen op basis van life evaluation in dat bepaald jaar</li>
       <li><b>Country name:</b> De namen van de landen</li>
       <li><b>Life evaluation (3 year-average):</b> De landen worden gerangschikt volgens hun score van de
-        voorbije 3 jaar omdat dit dan een grotere hoeveelheid data is en dus meer precieze schatters
-        (bv: de ranking van het jaar 2025 gebruikt de gemiddelde scores van de jaren 2022, 2023 en 2024)</li>
+        voorbije 3 jaar. Zie "Achtergrond" voor meer informatie hierover.</li>
       <li><b style="color: lightsteelblue  ">Log GDP per capita:</b> Deze variabele omvat de PPP (Purchasing
         Power Parity) en dat is een manier om economische cijfers tussen landen eerlijk te vergelijken
         omdat er rekening wordt gehouden met prijsverschillen. Alles in deze variabele is omgerekend naar
@@ -77,25 +102,66 @@
       de life evaluation score </p>
   </div>
 
+  <!--pagina voor alle datavisualisaties-->
   <div id="data" class="page">
     <div id="example_scatter_plot"></div>
     <div id="line_plot_landen"></div>
+    <div id="world_chart"></div>
+    <div id="controls">
+      <label for="year_slider">Year: <span id="year_label">2025</span></label>
+      <input type="range" id="year_slider">
+    </div>
+  </div>
+
+  <!--pagina voor alle samengevatte informatie per land-->
+  <!--mijn idee is om hier een zoekbalk te zetten waarmee je een of meerdere landen kan selecteren
+  en dat dan de info zoals op WHR staat getoond wordt; ook dacht ik om op de wereldkaart een button
+  te zetten in het kotje dat opent als je op een land klikt zodat je verder kan klikken naar alle info-->
+  <div id="landen" class="page">
+    <div class="dashboard-container">
+      <div class="search-section">
+        <input type="text" id="search_country" placeholder="Zoek land..." autocomplete="off">
+        <div id="country_list"></div> </div>
+      <div class="data-split">
+        <div class="left-panel">
+          <h1 id="country_name">Kies een land</h1>
+          <h3 id="country_score">Laatste life evaluation: </h3>
+          <h3 id="average">Gemiddelde life evaluation:  </h3>
+
+          <table id="country_table">
+            <thead>
+            <tr>
+              <th>Variabele</th>
+              <th>Waarde</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="right-panel" id="line_plot_container">
+        </div>
+      </div>
+    </div>
   </div>
 
   <!--dit is een functie die ervoor zorgt dat enkel de pagina zichtbaar is op welke je geklikt hebt-->
-  <script>
-    function showPage(pageId) {
-      document.querySelectorAll(".page").forEach(page => {
-        page.classList.remove("active");
-      });
-      document.getElementById(pageId).classList.add("active");
-    }
-  </script>
-
+<script>
+  function showPage(pageId) {
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
+    document.getElementById(pageId).classList.add("active");
+  }
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
 <script src="js/charts/example_scatter_plot.js"></script>
-<script src="js/charts/evachart.js"></script>
+<script src="js/charts/line_plot_landen.js"></script>
+<script src="js/charts/world_chart.js"></script>
+<script src="js/charts/info_per_land.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

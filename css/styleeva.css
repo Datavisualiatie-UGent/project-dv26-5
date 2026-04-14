@@ -13,6 +13,22 @@ body {
     align-items: center;
 }
 
+#line_plot_landen svg{
+    overflow: visible;
+}
+
+#world_chart{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -96,4 +112,12 @@ nav ul li a{
 
 .page.active {
     display: block;
+}
+
+.sphere {
+    fill: #EEEEEEEE;
+}
+
+.country:hover {
+    fill: red;
 }
