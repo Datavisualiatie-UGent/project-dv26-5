@@ -118,31 +118,32 @@
   en dat dan de info zoals op WHR staat getoond wordt; ook dacht ik om op de wereldkaart een button
   te zetten in het kotje dat opent als je op een land klikt zodat je verder kan klikken naar alle info-->
   <div id="landen" class="page">
-    <div class="dashboard-container">
-      <div class="search-section">
-        <input type="text" id="search_country" placeholder="Zoek land..." autocomplete="off">
-        <div id="country_list"></div> </div>
-      <div class="data-split">
-        <div class="left-panel">
-          <h1 id="country_name">Kies een land</h1>
-          <h3 id="country_score">Laatste life evaluation: </h3>
-          <h3 id="average">Gemiddelde life evaluation:  </h3>
+    <div class="container">
+      <!-- linkerkant -->
+      <div class="left">
+        <!-- zoekbalk -->
+        <input type="text" id="search_country" placeholder="Zoek land...">
+        <div id="country_list"></div>
+        <button id="clear_btn">Clear</button>
+        <h2 id="country_name">Selecteer een land</h2>
+        <p id="average"></p>
 
-          <table id="country_table">
-            <thead>
-            <tr>
-              <th>Variabele</th>
-              <th>Waarde</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+        <h3>Happiness Ranking</h3>
+        <table id="samenvatting">
+          <tbody></tbody>
+        </table>
 
-        <div class="right-panel" id="line_plot_container">
-        </div>
+        <h3>Overzicht variabelen</h3>
+        <table id="overzicht">
+          <tbody></tbody>
+        </table>
       </div>
+
+      <!-- rechterkant -->
+      <div class="right">
+        <div id="lijnplot"></div>
+      </div>
+
     </div>
   </div>
 
