@@ -155,7 +155,6 @@ td {
 /* dit neemt de eerste kolom van overzicht */
 #overzicht td:first-child,
 #overzicht th:first-child {
-    width: 70%;
     text-align: left;
     padding-left: 10px;
 }
@@ -163,12 +162,10 @@ td {
 /* dit neemt de tweede kolom van overzicht */
 #overzicht td:last-child,
 #overzicht th:last-child {
-    width: 30%;
     text-align: center;
 }
 
 #overzicht {
-    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
@@ -191,4 +188,19 @@ td {
 
 #lijnplot svg{
     overflow: visible;
+}
+
+#samenvatting caption{
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+#overzicht caption {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 8px;
+    white-space: nowrap;
 }

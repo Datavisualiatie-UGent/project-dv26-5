@@ -6,16 +6,16 @@ let fullDataGlobal = [];
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function(data) {
         data.forEach(d => {
-            d.country = d["Country name"].trim();
-            d.rank = +d["Rank"];
             d.year = +d["Year"];
+            d.rank = +d["Rank"];
+            d.country = d["Country name"].trim();
             d.life_eval = +d["Life evaluation (3-year average)"];
-            d.social_support = +d["Social support"];
-            d.gdp = +d["Log GDP per capita"];
-            d.health = +d["Healthy life expectancy at birth"];
-            d.freedom = +d["Freedom to make life choices"];
-            d.generosity = +d["Generosity"];
-            d.corruption = +d["Perceptions of corruption"];
+            d.gdp = +d["Explained by: Log GDP per capita"];
+            d.social_support = +d["Explained by: Social support"];
+            d.health = +d["Explained by: Healthy life expectancy"];
+            d.freedom = +d["Explained by: Freedom to make life choices"];
+            d.generosity = +d["Explained by: Generosity"];
+            d.corruption = +d["Explained by: Perceptions of corruption"];
         });
         //geselecteerde data op de nodige jaartallen
         fullDataGlobal = data.filter(d => d.year >= 2019 && d.year <= 2025);
@@ -26,9 +26,6 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
         const latestYear = d3.max(fullDataGlobal, d => d.year);
         latestDataGlobal = fullDataGlobal.filter(d => d.year === latestYear);
 
-        //zorgen dat er nog geen land opstaat als je pagina opent
-        d3.select("#country_name").text("Selecteer een land");
-        d3.select("#average").text("");
         updateCountryPanel(latestDataGlobal, selectedCountry)
 
     })
@@ -42,7 +39,7 @@ function updateCountryPanel(latestDataGlobal, country) {
     //vind de data voor dit land in het laatste jaar
     const d = latestDataGlobal.find(c => c.country === country);
 
-    //bereken alle nodige dingen voor de tabellen
+    //bereken alle nodige dingen voor de gemiddelde score + samenvatting tabel
     const avgscore = calculateAverageLifeEval(country);
     const hoogste = getHoogste(country);
     const laagste = getLaagste(country);
@@ -55,12 +52,11 @@ function updateCountryPanel(latestDataGlobal, country) {
 
     //geeft de gemiddelde score weer
     const avgText = (avgscore !== null && !isNaN(avgscore))
-        ? `Gemiddelde life evaluation: ${avgscore.toFixed(3)}`
+        ? `Gemiddelde life evaluation: ${avgscore.toFixed(3)} (op 10)`
         : "Gemiddelde life evaluation: -";
     d3.select("#average").text(avgText);
 
     //SAMENVATTING TABEL
-    //bovenkant
     const headers = ["Huidige", "Hoogste", "Laagste", "Gemiddelde", "Sterkste stijging",
         "Sterkste daling"];
 
@@ -68,11 +64,12 @@ function updateCountryPanel(latestDataGlobal, country) {
     const huidigeRank = (d && d.rank != null && !isNaN(d.rank)) ? d.rank : "-";
 
     //ook hier wordt enkel de waarde weergegeven als deze bestaat
-    const values = [huidigeRank, laagste || "-", hoogste || "-", avgpos || "-", sterksteStijg || "-",
-        sterksteDaal || "-"];
+    const values = [huidigeRank, laagste, hoogste, avgpos, sterksteStijg, sterksteDaal];
 
     const samenvatting = d3.select("#samenvatting");
     samenvatting.html("");
+
+    samenvatting.append("caption").text("Happiness ranking");
 
     samenvatting.append("thead").append("tr")
         .selectAll("th").data(headers).enter()
@@ -86,19 +83,18 @@ function updateCountryPanel(latestDataGlobal, country) {
     const overzichtTbody = d3.select("#overzicht tbody");
     overzichtTbody.html("");
 
-    //als het land data heeft voor het meest recente jaar, dan wordt dit weergegeven, anders de waarden
+    overzichtTbody.append("caption").text("Overzicht variabelen");
+
+    //als het land data heeft voor het meest recente jaar, dan wordt dit weergegeven, anders niet
     if (d) {
-        const checkValid = (val) => (val === null || isNaN(val) || val === 0) ? "-" : val;
-
         const overzichtData = [
-            { v: "Social support", w: checkValid(d.social_support) },
-            { v: "GDP per capita", w: checkValid(d.gdp) },
-            { v: "Healthy life expectation", w: checkValid(d.health) },
-            { v: "Freedom", w: checkValid(d.freedom) },
-            { v: "Generosity", w: checkValid(d.generosity) },
-            { v: "Perceptions of corruption", w: checkValid(d.corruption) }
+            { v: "Social support", w: d.social_support },
+            { v: "GDP per capita", w: d.gdp },
+            { v: "Healthy life expectation", w: d.health },
+            { v: "Freedom", w: d.freedom },
+            { v: "Generosity", w: d.generosity },
+            { v: "Perceptions of corruption", w: d.corruption }
         ];
-
         overzichtData.forEach(item => {
             const row = overzichtTbody.append("tr");
             row.append("td").text(item.v);
@@ -111,7 +107,7 @@ function updateCountryPanel(latestDataGlobal, country) {
             .text("Geen gedetailleerde data beschikbaar voor dit jaar.");
     }
 
-    //geef lijnplot, ook al niet alle jaren beschikbaar
+    //geef lijnplot, ook als niet alle jaren beschikbaar
     drawLinePlot(country);
 }
 
@@ -126,7 +122,7 @@ function selectCountry(country) {
 d3.select("#clear_btn").on("click", () => {
     selectedCountry = null;
 
-    d3.select("#country_name").text("Selecteer een land");
+    d3.select("#country_name").text("");
     d3.select("#average").text("");
 
     d3.select("#samenvatting").html("");
