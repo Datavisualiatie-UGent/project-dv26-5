@@ -142,16 +142,15 @@ function renderPlots(mapped) {
     sidebar.append("div")
         .text("Y-axis")
         .style("font-weight", "bold")
-        .style("margin-bottom", "6px")
-        .style("font-size", "12px")
+        .style("font-size", "10px")
         .style("text-transform", "uppercase")
-        .style("letter-spacing", "0.05em")
         .style("color", "#555");
 
     const list = sidebar.append("div")
         .style("display", "flex")
-        .style("gap", "8px")
+        .style("gap", "6px")
         .style("flex-wrap", "wrap")
+        .style("font-size", "10px")
         .style("flex-direction", "column");
 
     let selected = yColumns[0];
@@ -166,7 +165,7 @@ function renderPlots(mapped) {
         .on("click", function (event, d) {
             selected = d;
             items.style("font-weight", c => c === selected ? "bold" : "normal");
-            d3.select("#example_scatter_plot svg").remove();
+            d3.select("#example_scatter_plot div:has(svg)").remove();
             renderScatterPlot(mapped, selected);
         });
 
