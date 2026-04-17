@@ -6,7 +6,7 @@
     --primary-theme-color: #93368D;
     --secondary-theme-color: #4A8CA3;
     --tertiary-theme-color: #E2068C;
-    --primary-border: var(--primary-border);
+    --primary-border: 1px solid #aaa;
 }
 
 body {
@@ -229,7 +229,7 @@ td {
 
 .plot-container {
     background-color: #E8E7E2;
-    border: 1px solid #aaa;
+    border: var(--primary-border);
     border-radius: 4px;
     padding: 20px;
     margin-bottom: 30px;
@@ -246,4 +246,27 @@ td {
     background-color: var(--primary-theme-color);
     margin: 30px 0;
     padding: 0;
+}
+
+.year-btn {
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--primary-bg-color);
+    border-radius: 8px;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.year-btn.unselected {
+    opacity: 0.2;
+}
+
+.year-btn.selected {
+    border: 1px solid #4A90E2;
+}
+
+.year-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
