@@ -35,7 +35,7 @@ function renderScatterPlot(data, yCol) {
         .domain(yCol.domain)
         .range([height, 0]);
 
-    const plot = d3.select("#example_scatter_plot").append("div");
+    const plot = d3.select("#scatter_plot").append("div");
 
     const svg = plot.append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -134,7 +134,7 @@ function renderPlots(mapped) {
         { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 2.75]},
     ];
 
-    const container = d3.select("#example_scatter_plot");
+    const container = d3.select("#scatter_plot");
 
     const sidebar = container.append("div")
         .attr("class", "sidebar");
@@ -165,7 +165,7 @@ function renderPlots(mapped) {
         .on("click", function (event, d) {
             selected = d;
             items.style("font-weight", c => c === selected ? "bold" : "normal");
-            d3.select("#example_scatter_plot div:has(svg)").remove();
+            d3.select("#scatter_plot div:has(svg)").remove();
             renderScatterPlot(mapped, selected);
         });
 

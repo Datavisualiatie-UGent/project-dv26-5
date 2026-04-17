@@ -1,6 +1,27 @@
+:root {
+    --primary-bg-color: #EFEEE9;
+    --primary-text-color: #584F4C;
+    --primary-text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    --primary-font-family: Montserrat, sans-serif;
+    --primary-theme-color: #93368D;
+    --secondary-theme-color: #4A8CA3;
+    --tertiary-theme-color: #E2068C;
+    --primary-border: var(--primary-border);
+}
+
 body {
-    font-family: Calibri, Georgia, serif;
     margin: 5rem;
+    background-color: var(--primary-bg-color);
+    color: var(--primary-text-color);
+    text-shadow: var(--primary-text-shadow);
+}
+
+p {
+    font-family: var(--primary-font-family), sans-serif;
+}
+
+li {
+    font-family: var(--primary-font-family), sans-serif;
 }
 
 #example_scatter_plot div {
@@ -55,7 +76,6 @@ body {
 .tooltip text {
     fill: #000000;
     font-size: 12px;
-    font-family: sans-serif;
     font-weight: bold;
 }
 
@@ -72,11 +92,13 @@ body {
     stroke: none;
 }
 
-
 .hero{
-    background-color: plum;
+    background-image: linear-gradient(to right, var(--secondary-theme-color), var(--tertiary-theme-color));
+    border: var(--primary-border);
     padding: 10px 3%;
-    border-radius: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 }
 
 nav{
@@ -144,7 +166,7 @@ table {
 }
 
 td {
-    border: 1px solid #ddd;
+    border: var(--primary-border);
     padding: 6px;
 }
 
@@ -203,4 +225,25 @@ td {
     text-align: left;
     margin-bottom: 8px;
     white-space: nowrap;
+}
+
+.plot-container {
+    background-color: #E8E7E2;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+#data .plot-container {
+    margin-bottom: 20px;
+}
+
+.separator-bar {
+    width: 100%;
+    height: 1px;
+    background-color: var(--primary-theme-color);
+    margin: 30px 0;
+    padding: 0;
 }
