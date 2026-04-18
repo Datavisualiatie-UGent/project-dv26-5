@@ -21,11 +21,10 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
-function renderScatterPlot(data, yCol) {
+function renderScatterPlot(data, yCol, selYears, color) {
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 500 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
-    const color = d3.scaleOrdinal(d3.schemeObservable10);
 
     const xScale = d3.scaleLinear()
         .domain([0, 10])
@@ -35,7 +34,7 @@ function renderScatterPlot(data, yCol) {
         .domain(yCol.domain)
         .range([height, 0]);
 
-    const plot = d3.select("#example_scatter_plot").append("div");
+    const plot = d3.select("#scatter_plot").append("div");
 
     const svg = plot.append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -58,8 +57,9 @@ function renderScatterPlot(data, yCol) {
             .tickFormat("")
         );
 
+    var filtered = data.filter((d) =>  selYears.has(d.year));
     svg.selectAll("circle")
-        .data(data)
+        .data(filtered)
         .enter()
         .append("circle")
         .attr("cx", d => xScale(d.life_eval))
@@ -134,7 +134,7 @@ function renderPlots(mapped) {
         { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 2.75]},
     ];
 
-    const container = d3.select("#example_scatter_plot");
+    const container = d3.select("#scatter_plot");
 
     const sidebar = container.append("div")
         .attr("class", "sidebar");
@@ -142,17 +142,44 @@ function renderPlots(mapped) {
     sidebar.append("div")
         .text("Y-axis")
         .style("font-weight", "bold")
-        .style("margin-bottom", "6px")
-        .style("font-size", "12px")
+        .style("font-size", "10px")
         .style("text-transform", "uppercase")
-        .style("letter-spacing", "0.05em")
         .style("color", "#555");
 
     const list = sidebar.append("div")
         .style("display", "flex")
-        .style("gap", "8px")
+        .style("gap", "6px")
         .style("flex-wrap", "wrap")
+        .style("font-size", "10px")
         .style("flex-direction", "column");
+
+    sidebar.append("div")
+        .attr("class", "separator-bar")
+        .style("margin", "5px 0");
+
+
+    let years = new Set(mapped.map(d => d.year));
+    const allColors = d3.scaleOrdinal().domain(years)
+        .range(d3.schemeObservable10);
+
+    const yearButtons = sidebar.selectAll("button")
+        .data(years)
+        .enter()
+        .append("button")
+        .attr("class", "year-btn selected")
+        .style("background-color", d => allColors(d))
+        .text(d => d)
+        .on("click", function (event, d) {
+            event.target.classList.toggle("selected");
+            event.target.classList.toggle("unselected");
+            if (years.has(d)) {
+                years.delete(d);
+            } else {
+                years.add(d);
+            }
+            d3.select("#scatter_plot div:has(svg)").remove();
+            renderScatterPlot(mapped, selected, years, allColors);
+        });
 
     let selected = yColumns[0];
 
@@ -166,9 +193,9 @@ function renderPlots(mapped) {
         .on("click", function (event, d) {
             selected = d;
             items.style("font-weight", c => c === selected ? "bold" : "normal");
-            d3.select("#example_scatter_plot svg").remove();
-            renderScatterPlot(mapped, selected);
+            d3.select("#scatter_plot div:has(svg)").remove();
+            renderScatterPlot(mapped, selected, years, allColors);
         });
 
-    renderScatterPlot(mapped, selected);
+    renderScatterPlot(mapped, selected, years, allColors);
 }
