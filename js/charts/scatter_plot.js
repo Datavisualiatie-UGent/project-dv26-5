@@ -2,12 +2,12 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function (data) {
         data.forEach((d) => {
             d["life_eval"] = +d["Life evaluation (3-year average)"];
-            d["log_gdp"] = +d["Explained by: Log GDP per capita"];
-            d["social_support"] = +d["Explained by: Social support"];
-            d["healthy_life"] = +d["Explained by: Healthy life expectancy"];
-            d["freedom"] = +d["Explained by: Freedom to make life choices"];
-            d["generosity"] = +d["Explained by: Generosity"];
-            d["corruption"] = +d["Explained by: Perceptions of corruption"];
+            d["log_gdp"] = 100 * +d["Explained by: Log GDP per capita"]/d["life_eval"];
+            d["social_support"] = 100 * +d["Explained by: Social support"]/d["life_eval"];
+            d["healthy_life"] = 100 * +d["Explained by: Healthy life expectancy"]/d["life_eval"];
+            d["freedom"] = 100 * +d["Explained by: Freedom to make life choices"]/d["life_eval"];
+            d["generosity"] = 100 * +d["Explained by: Generosity"]/d["life_eval"];
+            d["corruption"] = 100 * +d["Explained by: Perceptions of corruption"]/d["life_eval"];
             d["year"] = d["Year"];
             d["country"] = d["Country name"];
         });
@@ -101,7 +101,7 @@ function renderScatterPlot(data, yCol, selYears, color) {
         .attr("x", -height / 2)
         .attr("y", -45)
         .attr("text-anchor", "middle")
-        .text(`Explained by: ${yCol.label}`);
+        .text(`Percentage explained by: ${yCol.label}`);
 
     svg.append("text")
         .attr("x", width / 2)
@@ -127,13 +127,14 @@ function renderScatterPlot(data, yCol, selYears, color) {
 
 
 function renderPlots(mapped) {
+    //TODO: ask about y scaling. Uniform for each covariate?
     const yColumns = [
-        { key: "log_gdp",       label: "Log GDP per capita",              domain: [0, 2.75]},
-        { key: "social_support",label: "Social support",                  domain: [0, 2.75]},
-        { key: "healthy_life",  label: "Healthy life expectancy",         domain: [0, 2.75]},
-        { key: "freedom",       label: "Freedom to make life choices",    domain: [0, 2.75]},
-        { key: "generosity",    label: "Generosity",                      domain: [0, 2.75]},
-        { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 2.75]},
+        { key: "log_gdp",       label: "Log GDP per capita",              domain: [0, 65]},
+        { key: "social_support",label: "Social support",                  domain: [0, 65]},
+        { key: "healthy_life",  label: "Healthy life expectancy",         domain: [0, 65]},
+        { key: "freedom",       label: "Freedom to make life choices",    domain: [0, 65]},
+        { key: "generosity",    label: "Generosity",                      domain: [0, 65]},
+        { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 65]},
     ];
 
     const container = d3.select("#scatter_plot");
