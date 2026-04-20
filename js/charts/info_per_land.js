@@ -2,6 +2,7 @@ let selectedCountry = null;
 let latestDataGlobal = [];
 let allCountries = [];
 let fullDataGlobal = [];
+let country = null;
 
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function(data) {
@@ -25,9 +26,8 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
         //meest recente jaar om weer te geven
         const latestYear = d3.max(fullDataGlobal, d => d.year);
         latestDataGlobal = fullDataGlobal.filter(d => d.year === latestYear);
-
-        updateCountryPanel(latestDataGlobal, selectedCountry)
-
+        country = "Afghanistan"
+        handleCountryChange(country);
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
@@ -110,12 +110,19 @@ function updateCountryPanel(latestDataGlobal, country) {
     //geef lijnplot, ook als niet alle jaren beschikbaar
     drawLinePlot(country);
 }
-
+//TODO Toevoegen back and ford tussen map en kaart
 //update als je een nieuw land selecteert
 function selectCountry(country) {
     selectedCountry = country;
     d3.select("#country_list").html("");
     updateCountryPanel(latestDataGlobal, selectedCountry);
+
+    const url = new URL(window.location);
+
+    url.searchParams.set("country",selectedCountry);
+
+    window.history.pushState({}, '', url);
+    handleCountryChange();
 }
 
 //dit is de clear button
@@ -128,6 +135,10 @@ d3.select("#clear_btn").on("click", () => {
     d3.select("#samenvatting").html("");
     d3.select("#overzicht tbody").html("");
     d3.select("#lijnplot").html("");
+
+    const url = new URL(window.location);
+    url.searchParams.delete("country");
+    window.history.pushState({}, '', url);
 });
 
 
@@ -317,10 +328,12 @@ function updateCountryList(filterText = "") {
 }
 
 d3.select("#search_country")
+
     .on("input", function() {
         updateCountryList(this.value);
     })
     .on("keydown", function(event) {
+
         if (event.key === "Enter") {
             const typed = this.value;
             const match = allCountries.find(c => c.toLowerCase() === typed.toLowerCase());
@@ -428,4 +441,38 @@ function getCountryData(country) {
     return fullDataGlobal
         .filter(d => d.country === country)
         .sort((a,b) => a.year - b.year);
+}
+
+
+function handleCountryChange() {
+    const params = new URLSearchParams(window.location.search);
+    const countryParam = params.get("country");
+    country = countryParam;
+
+    let matchedCountry = allCountries.find(c =>
+        countryParam && c.toLowerCase() === countryParam.toLowerCase()
+    );
+
+    updateCountryPanel(latestDataGlobal, matchedCountry || "Afghanistan");
+}
+
+if(country != null){
+    const backContainer = d3.select("landen")
+        .append("div")
+        .attr("class", "back-nav")
+        .style("padding", "20px")
+        .style("cursor", "pointer")
+        .on("click", () => {
+            const url = new URL(window.location);
+            url.searchParams.delete("country");
+            window.history.pushState({}, '', url);
+
+            showPage('data');
+        });
+
+    country = null;
+    backContainer.html(`
+    <span style="font-size: 20px; vertical-align: middle;">&#8592;</span> 
+    <span style="font-family: sans-serif; font-weight: bold; margin-left: 10px;">Back to Map</span>
+`);
 }

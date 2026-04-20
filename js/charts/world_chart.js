@@ -41,9 +41,9 @@ function renderWorldChart(){
     const pathGenerator = d3.geoPath().projection(projection);
 
 
-
-    const colorScale = d3.scaleSequential(d3.interpolateViridis)
-        .domain([0, 10]);
+    const colorScale = d3.scaleSequential()
+        .domain([0, 10])
+        .interpolator(d3.interpolateHsl("red", "green"));
 
     const zoom = d3.zoom()
         .scaleExtent([1, 8])
@@ -103,10 +103,17 @@ function renderWorldChart(){
         g.selectAll(".map-popup").remove();
 
         const [p, s] = pathGenerator.centroid(geometry);
+
+        let offsetY = 0;
+
+        if (s > height ) {
+            offsetY = -80;
+        }
+
         const popupGroup = g.append("g")
             .datum(d)
             .attr("class", "map-popup")
-            .attr("transform", `translate(${p}, ${s}) scale(${1/scale})`);
+            .attr("transform", `translate(${p}, ${s + offsetY}) scale(${1/scale})`);
 
         popupGroup.append("rect")
             .attr("x", -75)
@@ -119,7 +126,8 @@ function renderWorldChart(){
             .attr("rx", 10);
 
         popupGroup.append("text")
-            .attr("text-anchor", "middle")
+            .attr("text-" +
+                "anchor", "middle")
             .attr("y", -30)
             .style("font-size", "14px")
             .style("font-family", "sans-serif")
@@ -130,6 +138,53 @@ function renderWorldChart(){
             .attr("y", -10)
             .style("font-size", "12px")
             .text(`Score: ${dataByYear[currentYear]?.[d.id] || "No Data"}`);
+
+
+
+        const hasDataAtAll = Object.values(dataByYear).some(yearData => {
+            return yearData && yearData[d.id] !== undefined && yearData[d.id] !== null;
+        });
+
+        const xStrokeWidth = 2;
+
+        if (hasDataAtAll){
+
+            const otherPgGroup = popupGroup.append("a")
+                .attr("transform", "translate(0, 0)")
+                .style("cursor", "pointer")
+                .on("click", (e) => {
+                    const url = new URL(window.location);
+
+                    url.searchParams.set("country",idToName[d.id]);
+
+                    window.history.pushState({}, '', url);
+                    handleCountryChange();
+                    showPage('landen')
+                });
+
+            otherPgGroup.append("rect")
+
+                .attr("x", -10)
+                .attr("y", -8)
+                .attr("width", 50)
+                .attr("height", 20)
+                .attr("fill", "#3498db") // A nice blue
+                .style("filter", "url(#drop-shadow)") // Apply the shadow here
+                .on("mouseover", function() { d3.select(this).attr("fill", "#2980b9"); }) // Hover effect
+                .on("mouseout", function() { d3.select(this).attr("fill", "#3498db"); });
+
+            otherPgGroup.append("text")
+                .attr("x", -6)
+                .attr("y", -6)
+                .attr("text-anchor", "middle")
+                .attr("fill", "white")
+                .style("font-family", "sans-serif")
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .style("pointer-events", "none") // Ensures click goes through to the group
+                .text("See More");
+        }
+
 
         const closeBtnGroup = popupGroup.append("g")
             .attr("transform", "translate(62, -40)")
@@ -148,7 +203,6 @@ function renderWorldChart(){
             .attr("fill", "transparent")
             .style("pointer-events", "all");
 
-        const xStrokeWidth = 2;
 
         closeBtnGroup.append("line")
             .attr("x1", -6).attr("y1", -6)
@@ -350,5 +404,26 @@ function renderWorldChart(){
         .attr("transform", "translate(0, 10)")
         .call(legendAxis);
 
+
+    //Schadow
+
+    const filter = defs.append("filter")
+        .attr("id", "drop-shadow")
+        .attr("height", "130%");
+
+    filter.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", 3) // Softness of shadow
+        .attr("result", "blur");
+
+    filter.append("feOffset")
+        .attr("in", "blur")
+        .attr("dx", 2) // Horizontal shift
+        .attr("dy", 2) // Vertical shift
+        .attr("result", "offsetBlur");
+
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 }
 renderWorldChart();
