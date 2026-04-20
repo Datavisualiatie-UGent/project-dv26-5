@@ -11,6 +11,7 @@
 <div class = "hero">
     <nav>
         <img src="images/whr.png" class="logo" alt="Logo World Happiness Report">
+        <!-- TODO: 'buttons' om te navigeren-->
         <ul>
             <li><a href="#" class="nav-link active" onclick="showPage('achtergrond')">Achtergrond</a></li>
             <li><a href="#" class="nav-link" onclick="showPage('variabelen')">Variabelen</a></li>
@@ -103,8 +104,10 @@
         de life evaluation score </p>
 </div>
 
+<!--TODO: voeg scaling toe zodanig dat de pagina zich goed gedraagt op verschillende platforms/formaten-->
 <!--pagina voor alle datavisualisaties-->
 <div id="data" class="page">
+    <!--TODO: Voeg informatieve tekst toe bij elk van de plots-->
     <div id="scatter_plot" class="plot-container"></div>
     <div class=separator-bar></div>
     <div id="line_plot_landen" class="plot-container"></div>
@@ -115,6 +118,8 @@
         <label for="year_slider">Year: <span id="year_label">2025</span></label>
         <input type="range" id="year_slider">
     </div>
+    <div class=separator-bar></div>
+    <div id="position_plot" class="plot-container"></div>
 </div>
 
 <!--pagina voor alle samengevatte informatie per land-->
@@ -122,7 +127,7 @@
 en dat dan de info zoals op WHR staat getoond wordt; ook dacht ik om op de wereldkaart een button
 te zetten in het kotje dat opent als je op een land klikt zodat je verder kan klikken naar alle info-->
 <div id="landen" class="page">
-    <div class="container">
+    <div class="container plot-container">
         <!-- linkerkant -->
         <div class="left">
             <!-- zoekbalk -->
@@ -164,6 +169,7 @@ te zetten in het kotje dat opent als je op een land klikt zodat je verder kan kl
 <script src="js/charts/line_plot_landen.js"></script>
 <script src="js/charts/world_chart.js"></script>
 <script src="js/charts/info_per_land.js"></script>
+<script src="js/charts/position_plot.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
