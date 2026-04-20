@@ -224,6 +224,7 @@ td {
     white-space: nowrap;
 }
 
+/*TODO: fix overflow properly*/
 .plot-container {
     background-color: #E8E7E2;
     border: var(--primary-border);
