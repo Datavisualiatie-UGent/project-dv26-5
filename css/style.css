@@ -24,6 +24,10 @@ body {
     overflow: visible;
 }
 
+#position_plot svg{
+    overflow: visible;
+}
+
 #controls{
     display: flex;
     justify-content: center;
