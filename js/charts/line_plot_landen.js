@@ -30,6 +30,7 @@ function renderLinePlot(data) {
         .style("gap", "20px")
         .style("align-items", "flex-start");
 
+
     //dimensies en marges voor grafiek zetten
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 500 - margin.left - margin.right;
@@ -40,7 +41,7 @@ function renderLinePlot(data) {
         .domain(d3.extent(data, d => d.year))
         .range([0, width]);
     const yScale = d3.scaleLinear()
-        .domain([0,8])
+        .domain([0,10])
         .range([height, 0]); //omdat de y-as omgedraaid staat, moet 0 achteraan
 
     //voor layout selectie - grafiek - legende te krijgen
@@ -61,15 +62,6 @@ function renderLinePlot(data) {
 
     const linesGroup = chart.append("g");
 
-    //x- en y-as toevoegen
-    chart.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(xScale)
-            .ticks(d3.timeYear.every(1))
-            .tickFormat(d3.timeFormat("%Y")));
-
-    chart.append("g")
-        .call(d3.axisLeft(yScale));
 
     //gridlines toevoegen
     chart.append("g")
@@ -91,6 +83,16 @@ function renderLinePlot(data) {
         .attr("x2", width)
         .attr("y1", d => yScale(d))
         .attr("y2", d => yScale(d));
+
+    //x- en y-as toevoegen
+    chart.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale)
+            .ticks(d3.timeYear.every(1))
+            .tickFormat(d3.timeFormat("%Y")));
+
+    chart.append("g")
+        .call(d3.axisLeft(yScale));
 
     //titel maken
     chart.append("text")
@@ -152,7 +154,7 @@ function renderLinePlot(data) {
 
     const searchInput = controls.append("input")
         .attr("type", "text")
-        .attr("placeholder", "Search country...")
+        .attr("placeholder", "Zoek land...")
         .style("display", "block")
         .style("margin-bottom", "5px");
 
@@ -165,7 +167,6 @@ function renderLinePlot(data) {
         .style("padding", "5px");
 
     let selectedCountries = new Set();
-
     function updateList(filterText = "") {
         const filteredCountries = countries.filter(c =>
             c.toLowerCase().includes(filterText.toLowerCase())
@@ -253,7 +254,7 @@ function renderLinePlot(data) {
                 })
                 .on("mousemove", function (event) {
                     const [x, y] = d3.pointer(event, chart.node());
-                    tooltipGroup.attr("transform", `translate(${x + 10}, ${y + 10})`);
+                    tooltipGroup.attr("transform", `translate(${x + 15}, ${y + 10})`);
                 })
                 .on("mouseout", function () {
                     tooltipGroup.style("display", "none");
@@ -307,7 +308,7 @@ function renderLinePlot(data) {
     //legende maken wanneer meerdere landen geselecteerd zijn
     const legendContainer = container
         .append("div")
-        .style("margin-left", "20px")
+        .style("margin-left", "45px")
         .style("max-height", (height + margin.bottom) + "px")   //splitst in kolommen die niet verder gaan dan
         .style("column-width", "120px")       //lengte van de grafiek
         .style("column-gap", "10px");

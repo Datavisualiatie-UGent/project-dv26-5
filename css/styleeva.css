@@ -13,6 +13,22 @@ body {
     align-items: center;
 }
 
+#line_plot_landen svg{
+    overflow: visible;
+}
+
+#world_chart{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -96,4 +112,95 @@ nav ul li a{
 
 .page.active {
     display: block;
+}
+
+.sphere {
+    fill: #EEEEEEEE;
+}
+
+.country:hover {
+    fill: red;
+}
+
+.container {
+    display: flex;
+    gap: 40px;
+}
+
+.left {
+    width: 55%;
+}
+
+.right {
+    width: 45%;
+    margin-left: 50px;
+    margin-top: 80px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 6px;
+}
+
+#samenvatting tbody {
+    text-align: center;
+}
+
+/* dit neemt de eerste kolom van overzicht */
+#overzicht td:first-child,
+#overzicht th:first-child {
+    text-align: left;
+    padding-left: 10px;
+}
+
+/* dit neemt de tweede kolom van overzicht */
+#overzicht td:last-child,
+#overzicht th:last-child {
+    text-align: center;
+}
+
+#overzicht {
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+#country_list {
+    position: absolute;
+    background: white;
+    width: 200px;
+}
+
+.search-container {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#search_country {
+    width: 250px;
+    padding: 8px;
+}
+
+#lijnplot svg{
+    overflow: visible;
+}
+
+#samenvatting caption{
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+#overzicht caption {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 8px;
+    white-space: nowrap;
 }
