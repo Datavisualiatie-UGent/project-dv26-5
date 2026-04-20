@@ -6,7 +6,7 @@
     --primary-theme-color: #93368D;
     --secondary-theme-color: #4A8CA3;
     --tertiary-theme-color: #E2068C;
-    --primary-border: 1px solid #aaa;
+    --primary-border: 1px solid #AAA;
 }
 
 body {
@@ -16,11 +16,7 @@ body {
     text-shadow: var(--primary-text-shadow);
 }
 
-p {
-    font-family: var(--primary-font-family), sans-serif;
-}
-
-li {
+* {
     font-family: var(--primary-font-family), sans-serif;
 }
 

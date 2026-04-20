@@ -21,6 +21,8 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
+//TODO: fix de positionering van de sidebar
+
 function renderScatterPlot(data, yCol, selYears, color) {
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 500 - margin.left - margin.right;
