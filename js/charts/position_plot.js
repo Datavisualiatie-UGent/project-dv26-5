@@ -57,7 +57,8 @@ function renderPositionPlot(data) {
 
     const controls = container
         .append("div")
-        .style("margin-right", "20px");
+        .style("margin-right", "20px")
+        .attr("class", "sidebar");;
 
     const svg = container
         .append("svg")

@@ -47,7 +47,8 @@ function renderLinePlot(data) {
     //voor layout selectie - grafiek - legende te krijgen
     const controls = container
         .append("div")
-        .style("margin-right", "20px");
+        .style("margin-right", "20px")
+        .attr("class", "sidebar");
 
     //maak het svg element voor de grafiek
     const svg = container
