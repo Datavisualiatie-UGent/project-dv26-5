@@ -21,6 +21,32 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
+const continentMap = {
+    "Belgium": "Europe",
+    "Netherlands": "Europe",
+    "France": "Europe",
+    "Germany": "Europe",
+
+    "United States": "North America",
+    "Canada": "North America",
+
+    "Brazil": "South America",
+    "Argentina": "South America",
+
+    "China": "Asia",
+    "India": "Asia",
+    "Japan": "Asia",
+
+    "South Africa": "Africa",
+    "Nigeria": "Africa",
+
+    "Australia": "Oceania",
+    "New Zealand": "Oceania",
+
+    "Saudi Arabia": "Middle East",
+    "United Arab Emirates": "Middle East"
+};
+
 function renderLinePlot(data) {
     //om te zorgen dat alles mooi naast elkaar staat
     d3.select("#line_plot_landen").html("");
@@ -47,7 +73,12 @@ function renderLinePlot(data) {
     //voor layout selectie - grafiek - legende te krijgen
     const controls = container
         .append("div")
-        .style("margin-right", "20px");
+        .style("margin-right", "20px")
+        .style("display", "flex")
+        .style("gap", "10px");
+
+    const continentControls = controls.append("div");
+    const countryControls = controls.append("div");
 
     //maak het svg element voor de grafiek
     const svg = container
@@ -134,17 +165,8 @@ function renderLinePlot(data) {
     const grouped = d3.group(data, d => d.country);
     const countries = Array.from(grouped.keys()).sort(d3.ascending);
 
-    //selecteer alles knop
-    controls.append("button")
-        .text("Select All")
-        .on("click", () => {
-            selectedCountries = new Set(countries);
-            update();
-            updateList(searchInput.property("value"));
-        });
-
     //deselecteer alles knop
-    controls.append("button")
+    countryControls.append("button")
         .text("Clear All")
         .on("click", () => {
             selectedCountries.clear();
@@ -152,7 +174,28 @@ function renderLinePlot(data) {
             updateList(searchInput.property("value"));
         });
 
-    const searchInput = controls.append("input")
+    const continents = ["Europe", "Asia", "North America", "South America", "Africa", "Oceania", "Middle East"];
+
+    continentControls.append("div")
+        .style("margin-top", "10px")
+        .selectAll("button")
+        .data(continents)
+        .enter()
+        .append("button")
+        .text(d => d)
+        .style("display", "block")
+        .style("margin-bottom", "4px")
+        .on("click", (event, continent) => {
+
+            selectedCountries = new Set(
+                countries.filter(c => continentMap[c] === continent)
+            );
+
+            update();
+            updateList(searchInput.property("value"));
+        });
+
+    const searchInput = countryControls.append("input")
         .attr("type", "text")
         .attr("placeholder", "Zoek land...")
         .style("display", "block")
@@ -160,13 +203,20 @@ function renderLinePlot(data) {
 
 
     //maak selectie ding om landen al dan niet te selecteren
-    const list = controls.append("div")
+    const list = countryControls.append("div")
         .style("border", "1px solid #ccc")
         .style("height", "200px")
         .style("overflow-y", "scroll")
         .style("padding", "5px");
 
-    let selectedCountries = new Set();
+    //landen die al te zien zijn als je plot opent
+    let selectedCountries = new Set([
+        "Belgium",
+        "Afghanistan",
+        "New Zealand",
+        "Vietnam",
+        "United States"
+    ]);
     function updateList(filterText = "") {
         const filteredCountries = countries.filter(c =>
             c.toLowerCase().includes(filterText.toLowerCase())
