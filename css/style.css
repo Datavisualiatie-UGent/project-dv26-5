@@ -20,6 +20,20 @@ body {
     font-family: var(--primary-font-family), sans-serif;
 }
 
+#achtergrond{
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: 0 1rem;
+    line-height: 1.6;
+}
+
+#variabelen{
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: 0 1rem;
+    line-height: 1.6;
+}
+
 #line_plot_landen svg{
     overflow: visible;
 }
