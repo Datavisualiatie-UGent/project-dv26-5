@@ -32,6 +32,7 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .catch((error) => console.error("Error loading CSV:", error));
 
 
+
 //update de informatie
 function updateCountryPanel(latestDataGlobal, country) {
     if (!country) return;
@@ -79,35 +80,7 @@ function updateCountryPanel(latestDataGlobal, country) {
         .selectAll("td").data(values).enter()
         .append("td").text(v => v);
 
-    //OVERZICHT TABEL
-    const overzichtTbody = d3.select("#overzicht tbody");
-    overzichtTbody.html("");
-
-    overzichtTbody.append("caption").text("Overzicht variabelen");
-
-    //als het land data heeft voor het meest recente jaar, dan wordt dit weergegeven, anders niet
-    if (d) {
-        const overzichtData = [
-            { v: "Social support", w: d.social_support },
-            { v: "GDP per capita", w: d.gdp },
-            { v: "Healthy life expectation", w: d.health },
-            { v: "Freedom", w: d.freedom },
-            { v: "Generosity", w: d.generosity },
-            { v: "Perceptions of corruption", w: d.corruption }
-        ];
-        overzichtData.forEach(item => {
-            const row = overzichtTbody.append("tr");
-            row.append("td").text(item.v);
-            row.append("td").text(item.w);
-        });
-    } else {
-        overzichtTbody.append("tr")
-            .append("td").attr("colspan", 2)
-            .style("text-align", "center")
-            .text("Geen gedetailleerde data beschikbaar voor dit jaar.");
-    }
-
-    //geef lijnplot, ook als niet alle jaren beschikbaar
+    drawPieChart(d);
     drawLinePlot(country);
 }
 
@@ -129,8 +102,6 @@ d3.select("#clear_btn").on("click", () => {
     d3.select("#overzicht tbody").html("");
     d3.select("#lijnplot").html("");
 });
-
-
 function drawLinePlot(country){
     d3.select("#lijnplot").html("");
     const data = fullDataGlobal
@@ -315,7 +286,6 @@ function updateCountryList(filterText = "") {
         });
     items.exit().remove();
 }
-
 d3.select("#search_country")
     .on("input", function() {
         updateCountryList(this.value);
@@ -334,6 +304,7 @@ d3.select("#search_country")
             }
         }
     });
+
 
 //bereken de gemiddelde life evaluation
 function calculateAverageLifeEval(country) {
@@ -428,4 +399,91 @@ function getCountryData(country) {
     return fullDataGlobal
         .filter(d => d.country === country)
         .sort((a,b) => a.year - b.year);
+}
+
+function drawPieChart(d) {
+    const width = 400;
+    const height = 250;
+    const radius = Math.min(width, height) / 2 - 20;
+
+    d3.select("#overzicht").html("");
+
+    if (d) {
+        const overzichtData = [
+            {v: "Social support", w: d.social_support},
+            {v: "GDP per capita", w: d.gdp},
+            {v: "Healthy life expectation", w: d.health},
+            {v: "Freedom", w: d.freedom},
+            {v: "Generosity", w: d.generosity},
+            {v: "Perceived corruption", w: d.corruption}
+        ];
+
+        const svg = d3.select("#overzicht")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g")
+            .attr("transform", "translate(" + width / 3 + "," + height / 2 + ")");
+
+        const colorDomain = overzichtData.map(item => item.v);
+        color = d3.scaleOrdinal(d3.schemeCategory10).domain(colorDomain);
+
+        var pie = d3.pie().value((d) => d.w);
+        var data_ready = pie(overzichtData);
+
+        let pathElements = g.selectAll("path")
+            .data(data_ready, (d) => d.data.v);
+
+        let paths = pathElements.enter()
+            .append('path')
+            .merge(pathElements);
+
+        paths
+            .attr('d', d3.arc()
+                .innerRadius(2)
+                .outerRadius(radius)
+            )
+            .attr('fill', (d) => color(d.data.v))
+            .attr("stroke", "white")
+            .style("stroke-width", "2px")
+            .style("opacity", 1);
+
+        pathElements.exit().remove();
+
+        const legendContainer = svg.append("g")
+            .attr("transform", `translate(${width / 2 + 50}, 40)`);
+
+        const legendSpacing = 20;
+        const itemWidth = 15;
+        const itemHeight = 15;
+        let currentY = 0;
+
+        overzichtData.forEach(item => {
+            const variableName = item.v;
+            const colorValue = color(variableName);
+
+            legendContainer.append("rect")
+                .attr("width", itemWidth)
+                .attr("height", itemHeight)
+                .attr("fill", colorValue)
+                .attr("x", itemWidth - 10)
+                .attr("y", currentY + 5)
+                .style("vertical-align", "middle");
+
+            legendContainer.append("text")
+                .attr("x", itemWidth + legendSpacing / 2)
+                .attr("y", currentY + itemHeight / 2 + 5)
+                .attr("alignment-baseline", "middle")
+                .style("font-size", "12px")
+                .text(variableName);
+
+            currentY += legendSpacing;
+        });
+
+    } else {
+        d3.select("#overzicht").append("p")
+            .style("text-align", "center")
+            .text("Geen gedetailleerde data beschikbaar voor dit jaar.");
+    }
 }
