@@ -58,7 +58,8 @@ function renderPositionPlot(data) {
         .append("div")
         .style("margin-right", "20px")
         .style("display", "flex")
-        .style("gap", "10px");
+        .style("gap", "10px")
+        .attr("class", "sidebar");
 
     const continentControls = controls.append("div");
     const countryControls = controls.append("div");
