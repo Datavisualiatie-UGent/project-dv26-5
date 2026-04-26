@@ -2,6 +2,7 @@ let selectedCountry = null;
 let latestDataGlobal = [];
 let allCountries = [];
 let fullDataGlobal = [];
+let selectedYear = 2025; //standaard als pagina opent
 
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function(data) {
@@ -34,11 +35,11 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
 
 
 //update de informatie
-function updateCountryPanel(latestDataGlobal, country) {
+function updateCountryPanel(latestDataGlobal, country, d) {
     if (!country) return;
 
     //vind de data voor dit land in het laatste jaar
-    const d = latestDataGlobal.find(c => c.country === country);
+    const l = latestDataGlobal.find(c => c.country === country);
 
     //bereken alle nodige dingen voor de gemiddelde score + samenvatting tabel
     const avgscore = calculateAverageLifeEval(country);
@@ -62,10 +63,12 @@ function updateCountryPanel(latestDataGlobal, country) {
         "Sterkste daling"];
 
     //huidige rank wordt enkel weergegeven als deze bestaat, anders -
-    const huidigeRank = (d && d.rank != null && !isNaN(d.rank)) ? d.rank : "-";
+    const huidigeRank = (l && l.rank != null && !isNaN(l.rank)) ? l.rank : "-";
+    const sterksteStijgT = (sterksteStijg != null && !isNaN(sterksteStijg)) ? sterksteStijg : "-";
+    const sterksteDaalT = (sterksteDaal != null && !isNaN(sterksteDaal)) ? sterksteDaal : "-";
 
     //ook hier wordt enkel de waarde weergegeven als deze bestaat
-    const values = [huidigeRank, laagste, hoogste, avgpos, sterksteStijg, sterksteDaal];
+    const values = [huidigeRank, laagste, hoogste, avgpos, sterksteStijgT, sterksteDaalT];
 
     const samenvatting = d3.select("#samenvatting");
     samenvatting.html("");
@@ -88,7 +91,48 @@ function updateCountryPanel(latestDataGlobal, country) {
 function selectCountry(country) {
     selectedCountry = country;
     d3.select("#country_list").html("");
-    updateCountryPanel(latestDataGlobal, selectedCountry);
+    createYearButtons();
+    updateCountryPanelByYear(selectedCountry, selectedYear);
+}
+
+function createYearButtons() {
+    const years = d3.range(2019, 2026);
+
+    const container = d3.select("#year_buttons");
+    container.html("");
+
+    container.selectAll("button")
+        .data(years)
+        .enter()
+        .append("button")
+        .attr("class", d =>
+            d === selectedYear ? "year-btn-land year-btn-active"
+                : "year-btn-land year-btn-inactive"
+        )
+        .text(d => d)
+        .on("click", function(event, year) {
+            selectedYear = year;
+
+            //reset de knoppen
+            d3.selectAll(".year-btn-land")
+                .classed("year-btn-active", false)
+                .classed("year-btn-inactive", true);
+
+            //activeer degene waarop geklikt is
+            d3.select(this)
+                .classed("year-btn-active", true)
+                .classed("year-btn-inactive", false);
+
+            if (selectedCountry) {
+                updateCountryPanelByYear(selectedCountry, selectedYear);
+            }
+        });
+}
+
+function updateCountryPanelByYear(country, year) {
+    const yearData = fullDataGlobal.filter(d => d.year === year);
+    const d = yearData.find(c => c.country === country);
+    updateCountryPanel(yearData, country, d, year); // keep table logic
 }
 
 //dit is de clear button
@@ -99,9 +143,11 @@ d3.select("#clear_btn").on("click", () => {
     d3.select("#average").text("");
 
     d3.select("#samenvatting").html("");
-    d3.select("#overzicht tbody").html("");
+    d3.select("#overzicht").html("");
     d3.select("#lijnplot").html("");
+    d3.select("#year_buttons").html("");
 });
+
 function drawLinePlot(country){
     d3.select("#lijnplot").html("");
     const data = fullDataGlobal
@@ -221,7 +267,7 @@ function drawLinePlot(country){
         .attr("cy", d => yScale(d.life_eval))
         .attr("r", 5)
         .style("cursor", "pointer")
-        .attr("fill", "purple")
+        .attr("fill", "#93368D")
         .on("mouseover", function (event, d) {
             tooltipGroup.style("display", null);
             tooltipGroup.raise();
@@ -286,6 +332,7 @@ function updateCountryList(filterText = "") {
         });
     items.exit().remove();
 }
+
 d3.select("#search_country")
     .on("input", function() {
         updateCountryList(this.value);

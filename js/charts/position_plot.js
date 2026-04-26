@@ -1,3 +1,4 @@
+let selectedContinent = null;
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function (data) {
         data.forEach((d) => {
@@ -155,8 +156,8 @@ function renderPositionPlot(data) {
             updateList(searchInput.property("value"));
         });
 
-    const continents = ["Africa", "Asia", "Central America", "Europe", "Middle East", "North America", "Oceania",
-        "South America"]
+    const continents = ["Africa", "Asia", "Central America", "Europe", "Middle East", "North America",
+        "Oceania", "South America"];
 
     continentControls.append("div")
         .style("margin-top", "10px")
@@ -164,14 +165,31 @@ function renderPositionPlot(data) {
         .data(continents)
         .enter()
         .append("button")
+        .attr("class", d =>
+            d === selectedContinent
+                ? "continent-btn continent-active"
+                : "continent-btn continent-inactive"
+        )
         .text(d => d)
         .style("display", "block")
         .style("margin-bottom", "4px")
-        .on("click", (event, continent) => {
+        .on("click", function(event, continent) {
+
+            selectedContinent = continent;
 
             selectedCountries = new Set(
                 countries.filter(c => continentMap[c] === continent)
             );
+
+            // reset styles
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
+
+            // activate clicked
+            d3.select(this)
+                .classed("continent-active", true)
+                .classed("continent-inactive", false);
 
             update();
             updateList(searchInput.property("value"));

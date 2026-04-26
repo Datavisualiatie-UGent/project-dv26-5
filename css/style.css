@@ -10,7 +10,7 @@
 }
 
 body {
-    margin: 5rem;
+    margin: 2rem;
     background-color: var(--primary-bg-color);
     color: var(--primary-text-color);
     text-shadow: var(--primary-text-shadow);
@@ -34,11 +34,7 @@ body {
     line-height: 1.6;
 }
 
-#line_plot_landen svg{
-    overflow: visible;
-}
-
-#position_plot svg{
+#line_plot_landen svg, #position_plot svg {
     overflow: visible;
 }
 
@@ -48,7 +44,20 @@ body {
     align-items: center;
 }
 
-.sidebar {
+#line_plot_landen .sidebar, #position_plot .sidebar {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    min-width: 120px;
+    margin: 10px 20px 0 0 ;
+    background: #fafafa;
+    float: left;
+}
+
+#scatter_plot .sidebar {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -194,6 +203,7 @@ td {
     position: absolute;
     background: white;
     width: 200px;
+    z-index: 1000;
 }
 
 .search-container {
@@ -234,9 +244,6 @@ td {
     margin-bottom: 30px;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
     overflow: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 #data .plot-container {
@@ -251,7 +258,7 @@ td {
     padding: 0;
 }
 
-.year-btn {
+.year-btn, .year-btn-land {
     border: none;
     cursor: pointer;
     font-size: 10px;
@@ -272,4 +279,37 @@ td {
 .year-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.year-btn-inactive, .continent-inactive {
+    opacity: 0.4;
+}
+
+.year-btn-active, .continent-active {
+    font-weight: bold;
+    color: var(--primary-bg-color);
+    border: 1px solid slategrey;
+    background: slategrey;
+}
+
+.tussentekst {
+    max-width: 70ch;
+    margin: 20px auto;
+    background: linear-gradient(#E8E7E2, #E8E7E2) padding-box, linear-gradient(to right, var(--secondary-theme-color),
+                    var(--tertiary-theme-color)) border-box;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.continent-btn {
+    cursor: pointer;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.continent-btn:hover {
+    transform: translateY(-1px);
 }
