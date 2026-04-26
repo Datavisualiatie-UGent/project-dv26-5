@@ -149,11 +149,14 @@ function renderPositionPlot(data) {
 
     //deselecteer alles knop
     countryControls.append("button")
-        .text("Clear All")
+        .text("Clear")
         .on("click", () => {
             selectedCountries.clear();
             update();
             updateList(searchInput.property("value"));
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
         });
 
     const continents = ["Africa", "Asia", "Central America", "Europe", "Middle East", "North America",

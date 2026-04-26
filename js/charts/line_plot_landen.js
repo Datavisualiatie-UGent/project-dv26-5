@@ -310,11 +310,14 @@ function renderLinePlot(data) {
 
     //deselecteer alles knop
     countryControls.append("button")
-        .text("Clear All")
+        .text("Clear")
         .on("click", () => {
             selectedCountries.clear();
             update();
             updateList(searchInput.property("value"));
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
         });
 
     const continents = ["Africa", "Asia", "Central America", "Europe", "Middle East", "North America", "Oceania",
@@ -342,12 +345,12 @@ function renderLinePlot(data) {
                 countries.filter(c => continentMap[c] === continent)
             );
 
-            // reset styles
+            //reset
             d3.selectAll(".continent-btn")
                 .classed("continent-active", false)
                 .classed("continent-inactive", true);
 
-            // activate clicked
+            //activeer als op geklikt
             d3.select(this)
                 .classed("continent-active", true)
                 .classed("continent-inactive", false);
