@@ -2,7 +2,6 @@ let selectedCountry = null;
 let latestDataGlobal = [];
 let allCountries = [];
 let fullDataGlobal = [];
-let country = null;
 let selectedYear = 2025; //standaard als pagina opent
 
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
@@ -27,8 +26,9 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
         //meest recente jaar om weer te geven
         const latestYear = d3.max(fullDataGlobal, d => d.year);
         latestDataGlobal = fullDataGlobal.filter(d => d.year === latestYear);
-        country = "Belgium"
-        handleCountryChange(country);
+        selectedCountry = "Belgium"
+        selectCountry(selectedCountry);
+        updateBackContainer();
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
@@ -37,7 +37,6 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
 //update de informatie
 function updateCountryPanel(latestDataGlobal, country, d) {
     if (!country) return;
-
     //vind de data voor dit land in het laatste jaar
     const l = latestDataGlobal.find(c => c.country === country);
 
@@ -130,17 +129,19 @@ function createYearButtons() {
 }
 
 function updateCountryPanelByYear(country, year) {
-    const yearData = fullDataGlobal.filter(d => d.year === year);
-    const d = yearData.find(c => c.country === country);
-    updateCountryPanel(yearData, country, d, year); // keep table logic
-    updateCountryPanel(latestDataGlobal, selectedCountry);
+    const yearData = fullDataGlobal.filter(d => +d.year === +year);
+
+    const d = yearData.find(c =>
+        c.country &&
+        country &&
+        c.country.toLowerCase().trim() === country.toLowerCase().trim()
+    );
+
+    updateCountryPanel(yearData, country, d);
 
     const url = new URL(window.location);
-
-    url.searchParams.set("country",selectedCountry);
-
+    url.searchParams.set("country", country);
     window.history.pushState({}, '', url);
-    handleCountryChange();
 }
 
 //dit is de clear button
@@ -360,6 +361,7 @@ d3.select("#search_country")
 
             if (selected) {
                 selectCountry(selected);
+                console.log("selected");
                 this.value = "";
                 updateCountryList("");
             }
@@ -467,6 +469,7 @@ function drawPieChart(d) {
     const height = 250;
     const radius = Math.min(width, height) / 2 - 20;
 
+    console.log(d);
     d3.select("#overzicht").html("");
 
     if (d) {
@@ -550,36 +553,82 @@ function drawPieChart(d) {
 }
 
 
+function norm(str) {
+    return str?.toLowerCase().trim();
+}
 
 function handleCountryChange() {
     const params = new URLSearchParams(window.location.search);
     const countryParam = params.get("country");
-    country = countryParam;
+    if (!countryParam)  {console.log("error")
+        return}
+
+    selectedCountry = countryParam;
 
     let matchedCountry = allCountries.find(c =>
-        countryParam && c.toLowerCase() === countryParam.toLowerCase()
+        c && countryParam &&
+        norm(c) === norm(countryParam)
     );
-
-    updateCountryPanel(latestDataGlobal, matchedCountry || "Afghanistan");
+    updateBackContainer();
+    console.log(matchedCountry)
+    updateCountryPanelByYear(matchedCountry , selectedYear );
 }
 
-if(country != null){
-    const backContainer = d3.select("landen")
-        .append("div")
-        .attr("class", "back-nav")
-        .style("padding", "20px")
-        .style("cursor", "pointer")
-        .on("click", () => {
-            const url = new URL(window.location);
-            url.searchParams.delete("country");
-            window.history.pushState({}, '', url);
+function updateBackContainer() {
 
-            showPage('data');
-        });
+        if(selectedCountry != null){
+            let backContainer = d3.select("#landen").select(".back-nav");
+            if (backContainer.empty()) {
+                backContainer = d3.select("#landen")
+                    .append("div")
+                    .attr("class", "back-nav")
+                    .style("padding", "20px")
+                    .style("cursor", "pointer")
+                    .on("click", () => {
+                        const url = new URL(window.location);
+                        url.searchParams.delete("country");
+                        window.history.pushState({}, '', url);
 
-    country = null;
-    backContainer.html(`
-    <span style="font-size: 20px; vertical-align: middle;">&#8592;</span> 
-    <span style="font-family: sans-serif; font-weight: bold; margin-left: 10px;">Back to Map</span>
-`);
+                        showPage('data');
+
+                        setTimeout(() => {
+                            const savedYear = sessionStorage.getItem("selectedYear");
+
+                            if (savedYear) {
+                                const slider = document.getElementById("year_slider");
+                                const label = document.getElementById("year_label");
+
+                                if (slider && label) {
+                                    slider.value = savedYear;
+                                    label.textContent = savedYear;
+                                    slider.dispatchEvent(new Event("input"));
+                                }
+                            }
+
+                            document.getElementById("world_chart")?.scrollIntoView({
+                                behavior: "smooth"
+                            });
+
+                        }, 50);
+                    });
+            }
+
+            backContainer.html(`
+            <span style="font-size: 20px;">&#8592;</span> 
+            <span style="font-weight: bold; margin-left: 10px;"> To Map</span>
+        `);}
 }
+
+const nameAliases = {
+    "czechia": "czech rep.",
+    "south korea": "korea",
+    "côte d’ivoire": "côte d'ivoire",
+    "central african republic": "central african rep.",
+    "congo (brazzaville)": "congo",
+    "dr congo": "dem. rep. congo",
+    "bosnia and herzegovina": "bosnia and herz.",
+    "dominican republic": "dominican rep.",
+    "north macedonia": "macedonia",
+    "south sudan": "s. sudan",
+    "laos": "lao pdr",
+    "north cyprus": "n. cyprus" };

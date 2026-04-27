@@ -61,6 +61,12 @@ function renderWorldChart(){
     svg_base.call(zoom);
 
 
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get("section");
+
+    if (section === "map") {
+        document.querySelector("#map").scrollIntoView();
+    }
 
 
     function clicked(event, d) {
@@ -155,8 +161,11 @@ function renderWorldChart(){
                     url.searchParams.set("country",idToName[d.id]);
 
                     window.history.pushState({}, '', url);
-                    handleCountryChange();
-                    showPage('landen')
+                    showPage('landen');
+
+                    setTimeout(() => {
+                        handleCountryChange();
+                    }, 0);
                 });
 
             otherPgGroup.append("rect")
@@ -364,6 +373,9 @@ function renderWorldChart(){
         const name = idToName[d.id] || "Unknown";
         return `${name}`;
     }
+
+
+
 
 
 

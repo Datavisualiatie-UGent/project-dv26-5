@@ -258,38 +258,30 @@ td {
     padding: 0;
 }
 
-.year-btn, .year-btn-land {
+.year-btn-land {
     border: none;
     cursor: pointer;
     font-size: 10px;
     font-weight: bold;
-    color: var(--primary-bg-color);
     border-radius: 8px;
-    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    padding: 6px 10px;
+    transition: 0.2s;
+    background: white;
+    color: black;
 }
 
-.year-btn.unselected {
-    opacity: 0.2;
+.year-btn-active {
+    background: slategrey;
+    color: white;
+    border: 1px solid slategrey;
 }
 
-.year-btn.selected {
-    border: 1px solid #4A90E2;
-}
-
-.year-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.year-btn-inactive, .continent-inactive {
+.year-btn-inactive {
     opacity: 0.4;
 }
 
-.year-btn-active, .continent-active {
-    font-weight: bold;
-    color: var(--primary-bg-color);
-    border: 1px solid slategrey;
-    background: slategrey;
+.year-btn-land:hover {
+    transform: translateY(-2px);
 }
 
 .tussentekst {
