@@ -35,9 +35,6 @@ function renderWorldChart(){
         .translate([width / 2 -15, height / 1.5]);
 
 
-
-
-
     const pathGenerator = d3.geoPath().projection(projection);
 
 

@@ -21,6 +21,174 @@ d3.csv("data/WHR26_Data_Figure_2.1.csv")
     })
     .catch((error) => console.error("Error loading CSV:", error));
 
+const continentMap = {
+    "Belgium": "Europe",
+    "Netherlands": "Europe",
+    "France": "Europe",
+    "Germany": "Europe",
+    "Albania": "Europe",
+    "Austria": "Europe",
+    "Belarus": "Europe",
+    "Bosnia and Herzegovina": "Europe",
+    "Bulgaria": "Europe",
+    "Croatia": "Europe",
+    "Czechia": "Europe",
+    "Denmark": "Europe",
+    "Estonia": "Europe",
+    "Finland": "Europe",
+    "Greece": "Europe",
+    "Hungary": "Europe",
+    "Iceland": "Europe",
+    "Ireland": "Europe",
+    "Italy": "Europe",
+    "Kosovo": "Europe",
+    "Latvia": "Europe",
+    "Lithuania": "Europe",
+    "Luxembourg": "Europe",
+    "Malta": "Europe",
+    "Montenegro": "Europe",
+    "North Macedonia": "Europe",
+    "Norway": "Europe",
+    "Poland": "Europe",
+    "Portugal": "Europe",
+    "Moldova": "Europe",
+    "Romania": "Europe",
+    "Serbia": "Europe",
+    "Slovakia": "Europe",
+    "Slovenia": "Europe",
+    "Spain": "Europe",
+    "Sweden": "Europe",
+    "Switzerland": "Europe",
+    "Ukraine": "Europe",
+    "United Kingdom": "Europe",
+    "Georgia": "Europe",
+    "Russia": "Europe",
+
+    "United States": "North America",
+    "Canada": "North America",
+    "Cuba": "North America",
+    "Dominican Republic": "North America",
+    "Haiti": "North America",
+    "Jamaica": "North America",
+    "Mexico": "North America",
+
+    "Brazil": "South America",
+    "Argentina": "South America",
+    "Bolivia": "South America",
+    "Chile": "South America",
+    "Colombia": "South America",
+    "Ecuador": "South America",
+    "Guyana": "South America",
+    "Paraguay": "South America",
+    "Peru": "South America",
+    "Trinidad and Tobago": "South America",
+    "Uruguay": "South America",
+    "Venezuela": "South America",
+
+    "China": "Asia",
+    "India": "Asia",
+    "Japan": "Asia",
+    "Afghanistan": "Asia",
+    "Bangladesh": "Asia",
+    "Bhutan": "Asia",
+    "Cambodia": "Asia",
+    "Hong Kong": "Asia",
+    "Indonesia": "Asia",
+    "Kyrgyzstan": "Asia",
+    "Laos": "Asia",
+    "Malaysia": "Asia",
+    "Maldives": "Asia",
+    "Mongolia": "Asia",
+    "Myanmar": "Asia",
+    "Nepal": "Asia",
+    "Pakistan": "Asia",
+    "Philippines": "Asia",
+    "South Korea": "Asia",
+    "Singapore": "Asia",
+    "Sri Lanka": "Asia",
+    "Taiwan": "Asia",
+    "Tajikistan": "Asia",
+    "Thailand": "Asia",
+    "Turkmenistan": "Asia",
+    "Uzbekistan": "Asia",
+    "Vietnam": "Asia",
+    "Armenia": "Asia",
+    "Azerbaijan": "Asia",
+    "Kazakhstan": "Asia",
+
+    "South Africa": "Africa",
+    "Nigeria": "Africa",
+    "Algeria": "Africa",
+    "Benin": "Africa",
+    "Botswana": "Africa",
+    "Burkina Faso": "Africa",
+    "Burundi": "Africa",
+    "Cameroon": "Africa",
+    "Central African Republic": "Africa",
+    "Chad": "Africa",
+    "Comoros": "Africa",
+    "Congo": "Africa",
+    "Côte d’Ivoire": "Africa", //negeer deze error want het werkt wel
+    "DR Congo": "Africa",
+    "Djibouti": "Africa",
+    "Eswatini": "Africa",
+    "Ethiopia": "Africa",
+    "Gabon": "Africa",
+    "Gambia": "Africa",
+    "Ghana": "Africa",
+    "Guinea": "Africa",
+    "Kenya": "Africa",
+    "Lesotho": "Africa",
+    "Liberia": "Africa",
+    "Libya": "Africa",
+    "Madagascar": "Africa",
+    "Malawi": "Africa",
+    "Mali": "Africa",
+    "Mauritania": "Africa",
+    "Mauritius": "Africa",
+    "Morocco": "Africa",
+    "Mozambique": "Africa",
+    "Namibia": "Africa",
+    "Niger": "Africa",
+    "Rwanda": "Africa",
+    "Senegal": "Africa",
+    "Sierra Leone": "Africa",
+    "South Sudan": "Africa",
+    "Somalia": "Africa",
+    "Tanzania": "Africa",
+    "Togo": "Africa",
+    "Tunisia": "Africa",
+    "Uganda": "Africa",
+    "Zambia": "Africa",
+    "Zimbabwe": "Africa",
+
+    "Australia": "Oceania",
+    "New Zealand": "Oceania",
+
+    "Saudi Arabia": "Middle East",
+    "United Arab Emirates": "Middle East",
+    "Bahrain": "Middle East",
+    "Cyprus": "Middle East",
+    "Egypt": "Middle East",
+    "Iran": "Middle East",
+    "Iraq": "Middle East",
+    "Israel": "Middle East",
+    "Jordan": "Middle East",
+    "Kuwait": "Middle East",
+    "Lebanon": "Middle East",
+    "Oman": "Middle East",
+    "Palestine": "Middle East",
+    "Yemen": "Middle East",
+
+    "Belize": "Central America",
+    "Costa Rica": "Central America",
+    "Guatemala": "Central America",
+    "Honduras": "Central America",
+    "El Salvador": "Central America",
+    "Panama": "Central America",
+    "Nicaragua": "Central America"
+};
+
 function renderLinePlot(data) {
     //om te zorgen dat alles mooi naast elkaar staat
     d3.select("#line_plot_landen").html("");
@@ -47,7 +215,13 @@ function renderLinePlot(data) {
     //voor layout selectie - grafiek - legende te krijgen
     const controls = container
         .append("div")
-        .style("margin-right", "20px");
+        .style("margin-right", "20px")
+        .style("display", "flex")
+        .style("gap", "10px")
+        .attr("class", "sidebar");
+
+    const continentControls = controls.append("div");
+    const countryControls = controls.append("div");
 
     //maak het svg element voor de grafiek
     const svg = container
@@ -134,25 +308,58 @@ function renderLinePlot(data) {
     const grouped = d3.group(data, d => d.country);
     const countries = Array.from(grouped.keys()).sort(d3.ascending);
 
-    //selecteer alles knop
-    controls.append("button")
-        .text("Select All")
-        .on("click", () => {
-            selectedCountries = new Set(countries);
-            update();
-            updateList(searchInput.property("value"));
-        });
-
     //deselecteer alles knop
-    controls.append("button")
-        .text("Clear All")
+    countryControls.append("button")
+        .text("Clear")
         .on("click", () => {
             selectedCountries.clear();
             update();
             updateList(searchInput.property("value"));
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
         });
 
-    const searchInput = controls.append("input")
+    const continents = ["Africa", "Asia", "Central America", "Europe", "Middle East", "North America", "Oceania",
+        "South America"]
+
+    continentControls.append("div")
+        .style("margin-top", "10px")
+        .selectAll("button")
+        .data(continents)
+        .enter()
+        .append("button")
+        .attr("class", d =>
+            d === selectedContinent
+                ? "continent-btn continent-active"
+                : "continent-btn continent-inactive"
+        )
+        .text(d => d)
+        .style("display", "block")
+        .style("margin-bottom", "4px")
+        .on("click", function(event, continent) {
+
+            selectedContinent = continent;
+
+            selectedCountries = new Set(
+                countries.filter(c => continentMap[c] === continent)
+            );
+
+            //reset
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
+
+            //activeer als op geklikt
+            d3.select(this)
+                .classed("continent-active", true)
+                .classed("continent-inactive", false);
+
+            update();
+            updateList(searchInput.property("value"));
+        });
+
+    const searchInput = countryControls.append("input")
         .attr("type", "text")
         .attr("placeholder", "Zoek land...")
         .style("display", "block")
@@ -160,13 +367,16 @@ function renderLinePlot(data) {
 
 
     //maak selectie ding om landen al dan niet te selecteren
-    const list = controls.append("div")
+    const list = countryControls.append("div")
         .style("border", "1px solid #ccc")
         .style("height", "200px")
         .style("overflow-y", "scroll")
         .style("padding", "5px");
 
-    let selectedCountries = new Set();
+    //landen die al te zien zijn als je plot opent
+    let selectedCountries = new Set(["Belgium", "Afghanistan", "New Zealand", "Vietnam",
+        "United States"]);
+
     function updateList(filterText = "") {
         const filteredCountries = countries.filter(c =>
             c.toLowerCase().includes(filterText.toLowerCase())
@@ -233,7 +443,7 @@ function renderLinePlot(data) {
                 .attr("stroke-width", 2)
                 .attr("d", line)
                 .style("cursor", "pointer")
-                .on("mouseover", function (event) {
+                .on("mouseover", function () {
                     tooltipGroup.style("display", null);
                     tooltipGroup.raise();
 
@@ -300,6 +510,7 @@ function renderLinePlot(data) {
                 .on("mouseout", function () {
                     tooltipGroup.style("display", "none");
                 });
+            linesGroup.raise()
         });
         updateList();
         updateLegend();

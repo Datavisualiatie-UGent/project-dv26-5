@@ -1,3 +1,4 @@
+let selectedContinent = null;
 d3.csv("data/WHR26_Data_Figure_2.1.csv")
     .then(function (data) {
         data.forEach((d) => {
@@ -43,7 +44,6 @@ function renderPositionPlot(data) {
         .style("gap", "20px")
         .style("align-items", "flex-start");
 
-
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = 500 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
@@ -57,7 +57,13 @@ function renderPositionPlot(data) {
 
     const controls = container
         .append("div")
-        .style("margin-right", "20px");
+        .style("margin-right", "20px")
+        .style("display", "flex")
+        .style("gap", "10px")
+        .attr("class", "sidebar");
+
+    const continentControls = controls.append("div");
+    const countryControls = controls.append("div");
 
     const svg = container
         .append("svg")
@@ -141,25 +147,58 @@ function renderPositionPlot(data) {
     const grouped = d3.group(data, d => d.country);
     const countries = Array.from(grouped.keys()).sort(d3.ascending);
 
-    //selecteer alles knop
-    controls.append("button")
-        .text("Select All")
-        .on("click", () => {
-            selectedCountries = new Set(countries);
-            update();
-            updateList(searchInput.property("value"));
-        });
-
     //deselecteer alles knop
-    controls.append("button")
-        .text("Clear All")
+    countryControls.append("button")
+        .text("Clear")
         .on("click", () => {
             selectedCountries.clear();
             update();
             updateList(searchInput.property("value"));
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
         });
 
-    const searchInput = controls.append("input")
+    const continents = ["Africa", "Asia", "Central America", "Europe", "Middle East", "North America",
+        "Oceania", "South America"];
+
+    continentControls.append("div")
+        .style("margin-top", "10px")
+        .selectAll("button")
+        .data(continents)
+        .enter()
+        .append("button")
+        .attr("class", d =>
+            d === selectedContinent
+                ? "continent-btn continent-active"
+                : "continent-btn continent-inactive"
+        )
+        .text(d => d)
+        .style("display", "block")
+        .style("margin-bottom", "4px")
+        .on("click", function(event, continent) {
+
+            selectedContinent = continent;
+
+            selectedCountries = new Set(
+                countries.filter(c => continentMap[c] === continent)
+            );
+
+            // reset styles
+            d3.selectAll(".continent-btn")
+                .classed("continent-active", false)
+                .classed("continent-inactive", true);
+
+            // activate clicked
+            d3.select(this)
+                .classed("continent-active", true)
+                .classed("continent-inactive", false);
+
+            update();
+            updateList(searchInput.property("value"));
+        });
+
+    const searchInput = countryControls.append("input")
         .attr("type", "text")
         .attr("placeholder", "Zoek land...")
         .style("display", "block")
@@ -167,13 +206,15 @@ function renderPositionPlot(data) {
 
 
     //maak selectie ding om landen al dan niet te selecteren
-    const list = controls.append("div")
+    const list = countryControls.append("div")
         .style("border", "1px solid #ccc")
         .style("height", "200px")
         .style("overflow-y", "scroll")
         .style("padding", "5px");
 
-    let selectedCountries = new Set();
+    let selectedCountries = new Set(["Belgium", "Afghanistan", "New Zealand", "Vietnam",
+        "United States"]);
+
     function updateList(filterText = "") {
         const filteredCountries = countries.filter(c =>
             c.toLowerCase().includes(filterText.toLowerCase())
@@ -310,6 +351,7 @@ function renderPositionPlot(data) {
                 .on("mouseout", function () {
                     tooltipGroup.style("display", "none");
                 });
+            linesGroup.raise()
         });
         updateList();
         updateLegend();

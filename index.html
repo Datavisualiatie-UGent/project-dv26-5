@@ -71,7 +71,9 @@
 
 <!--pagina voor verklaring van de gebruikte variabelen-->
 <div id="variabelen" class="page">
-    <p>De variabelen die gebruikt worden in de datavisualisaties worden hier verklaard.</p>
+    <p>De variabelen die gebruikt worden in de datavisualisaties worden hier verklaard. Hierbij geven alle
+        <span style="color: var(--secondary-theme-color)">blauwe</span> variabelen telkens weer hoeveel invloed deze specifieke variabele heeft op
+        de life evaluation score.</p>
     <ul>
         <li><b>Year:</b> We gebruiken de data van de jaren 2019 - 2025</li>
         <li><b>Rank:</b> De positie van de landen op basis van life evaluation in dat bepaald jaar</li>
@@ -100,8 +102,6 @@
             en “Is corruptie wijd verspreid in het bedrijfsleven of niet?”. Als er data voor de corruptie in de
             overheid ontbrak, dan werd enkel de data van de corruptie in het bedrijfsleven gebruikt</li>
     </ul>
-    <p>Hierbij geven alle <span style="color: var(--secondary-theme-color)">blauwe</span> variabelen telkens weer hoeveel invloed deze specifieke variabele heeft op
-        de life evaluation score </p>
 </div>
 
 <!--TODO: voeg scaling toe zodanig dat de pagina zich goed gedraagt op verschillende platforms/formaten-->
@@ -111,6 +111,16 @@
     <div id="scatter_plot" class="plot-container"></div>
     <div class=separator-bar></div>
     <div id="line_plot_landen" class="plot-container"></div>
+    <p class="tussentekst">We zien dat de gelukkigste landen zich vooral in Europa bevinden. Hierin liggen veel life
+        evaluation scores tussen 6 en 8.  De meest ongelukkige liggen daarentegen in Afrika. De hoogste score is daar
+        een 6, maar de meeste liggen tussen de 3 en 5. Het ongelukkigste land ter wereld wordt gegeven door Afghanistan.
+        Dit ligt ver onder de andere scores in het continent Azië en ook in vergelijking met de andere landen scoort
+        dit laag. Het gelukkigste land is dan Finland, wat al enkele jaren stabiel blijft. Wat verder ook opvalt is dat
+        bij Noord-, Centraal-Amerika ongeveer dezelfde scores hebben, maar dat Zuid-Amerika iets lager scoort. De
+        landen in Oceanië behoren ook tot een van de gelukkigsten van de wereld. Wanneer gekeken wordt naar het
+        Midden-Oosten is er een duidelijke scheiding te zien tussen twee groepen van landen. Dit zijn de rijke en de
+        arme landen. Bij de lagere scores horen ook landen die niet noodzakelijk arm zijn, maar te kampen hebben moet
+        moeilijke economische of politieke situaties.</p>
     <div class=separator-bar></div>
     <div id="world_chart" class="plot-container">
         <div id="controls">
@@ -120,8 +130,6 @@
     </div>
     <!--TODO: breng deze 'controls' div nog in bovenstaande container-->
     <!--TODO: button om naar "landen" pagina te gaan per kadertje-->
-    <!--TODO: kader antarctica fixen-->
-    <!--TODO: kleurenschaal uit plot halen-->
     <div class=separator-bar></div>
     <div id="position_plot" class="plot-container"></div>
 </div>
@@ -131,6 +139,14 @@
 en dat dan de info zoals op WHR staat getoond wordt; ook dacht ik om op de wereldkaart een button
 te zetten in het kotje dat opent als je op een land klikt zodat je verder kan klikken naar alle info-->
 <div id="landen" class="page">
+    <p class="tussentekst">Op deze pagina vindt u alle informatie die beschikbaar is over de landen in de dataset over
+        de jaren 2019 - 2025. Via de knoppen kan er gewisseld worden om cijfers over de jaren heen te zien. Hierbij
+        wordt de huidige positie aangepast naar de positie van het land in dat jaar. De gemiddelde life evaluation
+        score is berekend door alle scores over de jaren op te tellen en te delen door 7 (omdat we over 7 jaar gaan).
+        De sterkste stijging en daling zijn berekend op basis van het grootste verschil tussen de life evaluation
+        scores te zien op de grafiek rechts. Het taartdiagram geeft weer hoeveel elke variabele invloed heeft op de
+        life evaluation score. Meer informatie over wat deze variabelen precies inhouden kan gevonden worden op de
+        “Variabelen” pagina. </p>
     <div class="container plot-container">
         <!-- linkerkant -->
         <div class="left">
@@ -138,6 +154,7 @@ te zetten in het kotje dat opent als je op een land klikt zodat je verder kan kl
             <input type="text" id="search_country" placeholder="Zoek land...">
             <div id="country_list"></div>
             <button id="clear_btn">Clear</button>
+            <div id="year_buttons" style="display: flex; gap: 8px; margin-top:10px"></div>
             <h1 id="country_name"></h1>
             <p id="average"></p>
 
