@@ -2,6 +2,7 @@ let dataByYear = {};
 let tsvDataGlobal = [];
 let idToName = {};
 let currentYear = 0;
+let idToCsvName = {};
 
 
 
@@ -157,12 +158,11 @@ function renderWorldChart(){
                 .style("cursor", "pointer")
                 .on("click", (e) => {
                     const url = new URL(window.location);
-
-                    url.searchParams.set("country",idToName[d.id]);
+                    url.searchParams.set("country", idToCsvName[d.id]);
 
                     window.history.pushState({}, '', url);
                     showPage('landen');
-
+                    reset();
                     setTimeout(() => {
                         handleCountryChange();
                     }, 0);
@@ -170,25 +170,43 @@ function renderWorldChart(){
 
             otherPgGroup.append("rect")
 
-                .attr("x", -10)
-                .attr("y", -8)
-                .attr("width", 50)
-                .attr("height", 20)
-                .attr("fill", "#3498db") // A nice blue
-                .style("filter", "url(#drop-shadow)") // Apply the shadow here
-                .on("mouseover", function() { d3.select(this).attr("fill", "#2980b9"); }) // Hover effect
-                .on("mouseout", function() { d3.select(this).attr("fill", "#3498db"); });
+                .attr("x", -50)
+                .attr("y", 0)
+                .attr("width", 100)
+                .attr("height", 15)
+                .attr("fill", "url(#line-theme-gradient)")
+                .style("filter", "url(#drop-shadow)")
+                .on("mouseover", function() {
+                    d3.select(this)
+                        .attr("fill", "#93368D")
+
+                    otherPgGroup
+                        .transition()
+                        .duration(150)
+                        .attr("transform", "scale(1.05)");
+                })
+                .on("mouseout", function() {
+                    d3.select(this)
+                        .attr("fill", "url(#line-theme-gradient)")
+                        .style("filter", "url(#drop-shadow)");
+
+                    otherPgGroup
+                        .transition()
+                        .duration(150)
+                        .attr("transform", "scale(1)");
+                });
 
             otherPgGroup.append("text")
-                .attr("x", -6)
-                .attr("y", -6)
+                .attr("x", 0)
+                .attr("y", 13)
                 .attr("text-anchor", "middle")
-                .attr("fill", "white")
+                .attr("fill", "#E4D9E6")
                 .style("font-family", "sans-serif")
                 .style("font-size", "14px")
                 .style("font-weight", "bold")
-                .style("pointer-events", "none") // Ensures click goes through to the group
-                .text("See More");
+                .style("pointer-events", "none")
+                .text("See More    →");
+
         }
 
 
@@ -291,6 +309,10 @@ function renderWorldChart(){
         csvData.forEach(d => {
             let rawName = d["Country name"];
             let year = d["Year"];
+
+            if (year < minYear || year > maxYear) return;
+
+
             if (rawName) {
                 let cleanName = rawName.toLowerCase().trim();
 
@@ -301,9 +323,10 @@ function renderWorldChart(){
                 const id = nameToId[cleanName];
 
                 if (id) {
+                    idToCsvName[id] = rawName;
+
                     if (!dataByYear[year]) dataByYear[year] = {};
                     dataByYear[year][id] = +d["Life evaluation (3-year average)"];
-
                 }
             }
         });
@@ -379,10 +402,9 @@ function renderWorldChart(){
 
 
 
-    // Legend
 
-    const legend = svg_base.append("g")
-        .attr("transform", "translate(10, 370)");
+
+    //Colors
 
     const defs = svg_base.append("defs");
 
@@ -396,11 +418,40 @@ function renderWorldChart(){
         .attr("offset", d => `${d*100 }%`)
         .attr("stop-color", d => colorScale(d*10));
 
-    legend.append("rect")
-        .attr("width", 200)
-        .attr("height", 10)
-        .style("fill", "url(#legend-gradient)");
+    const themeGradient = defs.append("linearGradient")
+        .attr("id", "line-theme-gradient")
+        .attr("x1", "0%")
+        .attr("x2", "100%")
+        .attr("y1", "0%")
+        .attr("y2", "0%");
 
+    themeGradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#93368D");
+
+    themeGradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#4A8CA3");
+
+    const glow = defs.append("filter")
+        .attr("id", "drop-shadow-hover")
+        .attr("height", "130%");
+
+    glow.append("feDropShadow")
+        .attr("dx", 0)
+        .attr("dy", 2)
+        .attr("stdDeviation", 3)
+        .attr("flood-color", "#93368D")
+        .attr("flood-opacity", 0.5);
+
+
+    // Legend
+
+
+
+
+    const legend = svg_base.append("g")
+        .attr("transform", "translate(10, 370)");
 
     const legendScale = d3.scaleLinear()
         .domain([0, 10])
@@ -412,6 +463,12 @@ function renderWorldChart(){
     legend.append("g")
         .attr("transform", "translate(0, 10)")
         .call(legendAxis);
+    legend.append("rect")
+        .attr("width", 200)
+        .attr("height", 10)
+        .style("fill", "url(#legend-gradient)");
+
+
 
 
     //Schadow

@@ -85,7 +85,9 @@ function updateCountryPanel(latestDataGlobal, country, d) {
     drawPieChart(d);
     drawLinePlot(country);
 }
-//TODO Toevoegen back and ford tussen map en kaart
+
+
+
 //update als je een nieuw land selecteert
 function selectCountry(country) {
     selectedCountry = country;
