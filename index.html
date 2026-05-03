@@ -109,18 +109,6 @@
 <!--TODO: voeg scaling toe zodanig dat de pagina zich goed gedraagt op verschillende platforms/formaten-->
 <!--pagina voor alle datavisualisaties-->
 <div id="data" class="page">
-    <!--TODO: Voeg informatieve tekst toe bij elk van de plots-->
-    <div class="plot-container">
-        <div class="left">
-            <div id="scatter_plot"></div>
-        </div>
-        <div class="right">
-            <p class="tussentekst">
-                <!-- TODO: jan tekst bij grafiek scatterplot -->
-            </p>
-        </div>
-    </div>
-    <div class=separator-bar></div>
     <div id="line_plot_landen" class="plot-container"></div>
     <p class="tussentekst">We zien dat de gelukkigste landen zich vooral in Europa bevinden. Hierin liggen veel life
         evaluation scores tussen 6 en 8.  De meest ongelukkige liggen daarentegen in Afrika. De hoogste score is daar
@@ -153,9 +141,31 @@
         </div>
     </div>
     <div class=separator-bar></div>
+    <div class="plot-container">
+        <div class="left">
+            <div id="scatter_plot"></div>
+        </div>
+        <div class="right">
+            <p class="tussentekst">Wat maakt mensen gelukkig? Is het economische welvaart of vrijheid? Per land wordt in
+                dit onderzoek de bijdrage (in %) van elke factor over de verschillende jaren uitgewerkt ten opzichte van
+                de life evaluation score. We wijzen graag op enkele globale trends. Economische welvaart (uitgedrukt door
+                BBP per capita) werd in de afgelopen jaren steeds belangrijker, en in 2025 kon men voor veel landen
+                gemakkelijk 30% van de levensevaluatiescore toeschrijven aan het GDP/BBP. Sociale ondersteuning fluctueerde
+                echter sterk van jaar tot jaar. Tijdens 2020 en 2021 droeg deze factor erg weinig bij aan de life
+                evaluation scores, zeker juist aan het begin van de coronacrisis. Op een vergelijkbare wijze zien we
+                dat de bijdrage van mondiale gezondheid het hoogst was in 2019 en 2025, maar aanzienlijk lager was in
+                de jaren die ertussen lagen.
+            </p>
+        </div>
+    </div>
+    <div class=separator-bar></div>
     <div id="position_plot" class="plot-container"></div>
-    <p class="tussentekst">
-        <!-- TODO: jan tekst bij grafiek position plot -->
+    <p class="tussentekst">Welke landen hebben nu de hoogste life evaluation? Van 2019 tot 2025 was Finland keer op keer
+        nummer 1. Onder de Aziatische landen vormen Taiwan en Singapore een erg duidelijk top 2. Afghanistan is hier
+        het meest ongelukkige land, en het is dat bovendien ook wereldwijd. Het midden Oosten lijkt zich duidelijk in twee
+        groepen te verdelen; enerzijds landen die consistent bij de top 50 gelukkigste landen zijn, en anderzijds landen
+        die zich eerder bij de top 50 ongelukkigste landen bevinden. In dit deel van de wereld is Israel de duidelijke
+        koploper. Kies zeker zelf ook enkele landen om te vergelijken!
     </p>
 </div>
 

@@ -92,8 +92,15 @@ body {
 }
 
 .grid line {
-    stroke: #e0e0e0;
+    stroke: #ccc;
     stroke-dasharray: 3,3;
+}
+
+.vertical-grid line,
+.horizontal-grid line {
+    stroke: #ccc;
+    stroke-opacity: 0.8;
+    stroke-dasharray: 5, 5;
 }
 
 .grid path {
@@ -319,4 +326,27 @@ td {
     padding: 4px 8px;
     border-radius: 6px;
     transition: 0.2s;
+}
+
+.year-btn {
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--primary-bg-color);
+    border-radius: 8px;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.year-btn.unselected {
+    opacity: 0.2;
+}
+
+.year-btn.selected {
+    border: 1px solid #4A90E2;
+}
+
+.year-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }

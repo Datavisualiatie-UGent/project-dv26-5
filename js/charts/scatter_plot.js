@@ -45,15 +45,14 @@ function renderScatterPlot(data, yCol, selYears, color) {
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     svg.append("g")
-        .attr("class", "grid")
-        .attr("transform", `translate(0, ${height})`)
+        .attr("class", "axis bottom-axis vertical-grid")
         .call(d3.axisBottom(xScale)
-            .tickSize(-height)
+            .tickSize(height)
             .tickFormat("")
         );
 
     svg.append("g")
-        .attr("class", "grid")
+        .attr("class", "axis left-axis horizontal-grid")
         .call(d3.axisLeft(yScale)
             .tickSize(-width)
             .tickFormat("")
@@ -66,7 +65,7 @@ function renderScatterPlot(data, yCol, selYears, color) {
         .append("circle")
         .attr("cx", d => xScale(d.life_eval))
         .attr("cy", d => yScale(d[yCol.key]))
-        .attr("r", 6)
+        .attr("r", 3)
         .attr("fill", d => color(d.year))
         .attr("fill-opacity", 0.6)
         .on("mouseover", (event, d) => {
@@ -126,15 +125,26 @@ function renderScatterPlot(data, yCol, selYears, color) {
 }
 
 
+function changeYearSelection(event, years, d, mapped, selected, allColors) {
+    event.target.classList.toggle("selected");
+    event.target.classList.toggle("unselected");
+    if (years.has(d)) {
+        years.delete(d);
+    } else {
+        years.add(d);
+    }
+    d3.select("#scatter_plot div:has(svg)").remove();
+    renderScatterPlot(mapped, selected, years, allColors);
+}
+
 function renderPlots(mapped) {
-    //TODO: ask about y scaling. Uniform for each covariate?
     const yColumns = [
         { key: "log_gdp",       label: "Log GDP per capita",              domain: [0, 65]},
-        { key: "social_support",label: "Social support",                  domain: [0, 65]},
-        { key: "healthy_life",  label: "Healthy life expectancy",         domain: [0, 65]},
-        { key: "freedom",       label: "Freedom to make life choices",    domain: [0, 65]},
-        { key: "generosity",    label: "Generosity",                      domain: [0, 65]},
-        { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 65]},
+        { key: "social_support",label: "Social support",                  domain: [0, 45]},
+        { key: "healthy_life",  label: "Healthy life expectancy",         domain: [0, 25]},
+        { key: "freedom",       label: "Freedom to make life choices",    domain: [0, 30]},
+        { key: "generosity",    label: "Generosity",                      domain: [0, 20]},
+        { key: "corruption",    label: "Perceptions of corruption",       domain: [0, 20]},
     ];
 
     const container = d3.select("#scatter_plot");
@@ -173,15 +183,7 @@ function renderPlots(mapped) {
         .style("background-color", d => allColors(d))
         .text(d => d)
         .on("click", function (event, d) {
-            event.target.classList.toggle("selected");
-            event.target.classList.toggle("unselected");
-            if (years.has(d)) {
-                years.delete(d);
-            } else {
-                years.add(d);
-            }
-            d3.select("#scatter_plot div:has(svg)").remove();
-            renderScatterPlot(mapped, selected, years, allColors);
+            changeYearSelection(event, years, d, mapped, selected, allColors);
         });
 
     let selected = yColumns[0];
