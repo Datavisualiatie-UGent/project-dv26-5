@@ -38,7 +38,7 @@ body {
     overflow: visible;
 }
 
-#controls{
+#year_slider {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,35 +103,52 @@ body {
 .hero{
     background-image: linear-gradient(to right, var(--secondary-theme-color), var(--tertiary-theme-color));
     border: var(--primary-border);
-    padding: 10px 3%;
+    padding: 3px 3%;
     border-radius: 10px;
-    margin-bottom: 30px;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 }
+
+.nav-list {
+    list-style: none;
+    margin-right: 350px;
+}
+
+.page-button {
+    padding: 10px 18px;
+    background-color: aliceblue;
+    color: black;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.page-button:hover {
+    background-color: #d6d6f5;
+    transform: translateY(-2px);
+}
+
+.page-button.active {
+    background-color: #b0b0e6;
+}
+
+.logo {
+    height:60px;
+}
+
+
 nav{
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.logo{
-    width: 100px;
-}
-
-nav ul {
-    margin: 0 auto;
-}
-
 nav ul li{
     display: inline-block;
     list-style: none;
     margin: 10px 20px;
-}
-
-nav ul li a{
-    text-decoration: none;
-    color: aliceblue;
-    font-weight: 400;
 }
 
 .page {
@@ -156,15 +173,16 @@ nav ul li a{
     gap: 40px;
 }
 
-.left {
-    width: 55%;
+.left, .right {
+    flex: 1;
 }
 
-.right {
-    width: 45%;
+.right #lijnplot {
+    width: 50%;
     margin-left: 50px;
     margin-top: 80px;
 }
+
 
 table {
     width: 100%;
@@ -244,6 +262,7 @@ td {
     margin-bottom: 30px;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
     overflow: auto;
+    display: flex;
 }
 
 #data .plot-container {
@@ -277,7 +296,7 @@ td {
 }
 
 .year-btn-inactive, .continent-inactive {
-    opacity: 0.4;
+    opacity: 0.6;
 }
 
 .year-btn-land:hover, .continent-btn:hover {
@@ -285,7 +304,7 @@ td {
 }
 
 .tussentekst {
-    max-width: 70ch;
+    max-width: 60ch;
     margin: 20px auto;
     background: linear-gradient(#E8E7E2, #E8E7E2) padding-box, linear-gradient(to right, var(--secondary-theme-color),
                     var(--tertiary-theme-color)) border-box;

@@ -10,13 +10,14 @@
 <body>
 <div class = "hero">
     <nav>
-        <img src="images/whr.png" class="logo" alt="Logo World Happiness Report">
-        <!-- TODO: 'buttons' om te navigeren-->
-        <ul>
-            <li><a href="#" class="nav-link active" onclick="showPage('achtergrond')">Achtergrond</a></li>
-            <li><a href="#" class="nav-link" onclick="showPage('variabelen')">Variabelen</a></li>
-            <li><a href="#" class="nav-link" onclick="showPage('data')">Data</a></li>
-            <li><a href="#" class="nav-link" onclick="showPage('landen')">Landen</a></li>
+        <div class="left">
+            <img src="images/whr.png" class="logo" alt="Logo World Happiness Report">
+        </div>
+        <ul class="nav-list">
+            <li><button class="page-button active" onclick="showPage('achtergrond')">Achtergrond</button></li>
+            <li><button class="page-button" onclick="showPage('variabelen')">Variabelen</button></li>
+            <li><button class="page-button" onclick="showPage('data')">Data</button></li>
+            <li><button class="page-button" onclick="showPage('landen')">Landen</button></li>
         </ul>
     </nav>
 </div>
@@ -28,37 +29,38 @@
         Het World Happiness Report is een jaarlijks rapport dat uitgebreid overzicht biedt van hoe gelukkig
         mensen zich voelen over de hele wereld. Dit rapport meet geluk aan de hand van verschillende indicatoren
         zoals onder andere economische cijfers, sociale ondersteuning en vrijheid. Het rapport baseert zich op
-        gegevens van onder andere de World Health Organization en de World Bank, en combineert subjectieve
-        evaluaties van levenskwaliteit met objectieve indicatoren. Op deze manier ontstaat er een beeld van wat
-        geluk betekent in verschillende culturele en economische contexten. </p>
+        gegevens van de World Health Organization en de World Bank, en combineert subjectieve evaluaties van
+        levenskwaliteit met objectieve indicatoren. Op deze manier ontstaat er een beeld van wat geluk betekent in
+        verschillende culturele en economische contexten. </p>
     <div class=separator-bar></div>
     <p>
         De happiness ranking is gebaseerd op één vraag, genaamd de Cantril Ladder:
     </p>
     <p style="text-align: center">
-        <i>Beeld je een ladder in met treden die genummerd zijn met 0 onderaan en 10 helemaal bovenaan. De top van
-            de ladder stelt het best mogelijke leven voor en de onderste trede het slechtst mogelijke leven voor u.
-            Op welk niveau van de ladder vindt u dat u momenteel staat?</i>
+        <i>Beeld je een ladder in met treden die genummerd zijn met 0 onderaan en 10 bovenaan. De top van de ladder
+            stelt het best mogelijke leven voor en onderaan het slechtst mogelijke leven voor u. Op welk niveau van de
+            ladder vindt u dat u momenteel staat?</i>
     </p>
     <p>
         Deze vraag is universeel en democratisch. De Cantril Ladder stimuleert mensen om een eigen perspectief
         in te nemen over waar ze nu staan in hun leven. Dit gebeurt onafhankelijk van hun cultuur of achtergrond.
         Verder gebruikt de vraag geen concepten zoals geluk, welzijn of tevredenheid zodat dit makkelijk te
-        begrijpen is in verschillende talen. Verder worden voor deze data life evaluations gebruikt. Dit wordt
-        gedaan omdat emoties eerder een momentopname beschrijven en verschillen van dag tot dag. Ook kunnen emoties
-        sterk beïnvloed worden. Een life evaluation omvat de gebeurtenissen van het leven in zijn geheel.
+        begrijpen is in verschillende talen. Voor deze data worden life evaluations gebruikt. Dit wordt gedaan omdat
+        emoties eerder een momentopname beschrijven en verschillen van dag tot dag. Ook kunnen emoties sterk beïnvloed
+        kunnen worden. Een life evaluation omvat de gebeurtenissen van het leven in zijn geheel en dus geen invloed
+        van buitenaf.
     </p>
     <p>
-        Belangrijk om nog op te merken is dat niet alle landen data hebben. Sommige landen hebben geen data,
-        terwijl anderen wel data hebben maar niet voor alle jaren. Dit is mede doordat sommige populaties klein
+        Belangrijk om nog op te merken is dat de data niet voor alle landen compleet is. Sommige landen hebben geen data,
+        terwijl anderen wel data hebben maar niet voor alle jaren. Dit is mede doordat bepaalde populaties klein
         zijn en te veel geld kosten om elk jaar data te verzamelen. Om een meer correcte inschatting te maken
-        van life evaluation per land, wordt er altijd data gebruikt van de afgelopen drie jaren. Dus voor de
-        rankings uit 2025 zijn de data van 2022 tot 2024 gebruikt.
+        van life evaluation per land, wordt er data gebruikt van de afgelopen drie jaren. Dus, bijvoorbeeld, voor de
+        rankings uit 2025 zijn de data van 2022, 2023 en 2024 gebruikt.
     </p>
     <div class=separator-bar></div>
     <p>
         Het doel van dit project is om deze complexe gegevens inzichtelijk te maken door middel van
-        datavisualisatie. Daarnaast richt dit project zich op het beantwoorden van volgende onderzoeksvragen:
+        datavisualisaties. Daarnaast richt dit project zich op het beantwoorden van volgende onderzoeksvragen:
     </p>
     <ul>
         <li>Welke landen behoren tot de gelukkigste ter wereld? Hoe stabiel zijn deze posities doorheen
@@ -108,7 +110,16 @@
 <!--pagina voor alle datavisualisaties-->
 <div id="data" class="page">
     <!--TODO: Voeg informatieve tekst toe bij elk van de plots-->
-    <div id="scatter_plot" class="plot-container"></div>
+    <div class="plot-container">
+        <div class="left">
+            <div id="scatter_plot"></div>
+        </div>
+        <div class="right">
+            <p class="tussentekst">
+                <!-- TODO: jan tekst bij grafiek scatterplot -->
+            </p>
+        </div>
+    </div>
     <div class=separator-bar></div>
     <div id="line_plot_landen" class="plot-container"></div>
     <p class="tussentekst">We zien dat de gelukkigste landen zich vooral in Europa bevinden. Hierin liggen veel life
@@ -122,22 +133,34 @@
         arme landen. Bij de lagere scores horen ook landen die niet noodzakelijk arm zijn, maar te kampen hebben moet
         moeilijke economische of politieke situaties.</p>
     <div class=separator-bar></div>
-    <div id="world_chart" class="plot-container">
-        <div id="controls">
-            <label for="year_slider">Year: <span id="year_label">2025</span></label>
-            <input type="range" id="year_slider">
+    <div class="plot-container">
+        <div class="left">
+            <div id="world_chart"></div>
+            <div id="controls">
+                <label for="year_slider">Year: <span id="year_label">2025</span></label>
+                <input type="range" id="year_slider">
+            </div>
+        </div>
+        <div class="right">
+            <p class="tussentekst">Op deze kaart is een duidelijk verschil te zien over continenten heen. Er is te
+                zien dat de hogere life evaluation scores te vinden zijn in Europa, Amerika en Oceanië. In het
+                Midden-Oosten zijn er zowel hogere als lagere scores. Afghanistan is, over alle landen heen en ook
+                jaren heen, het land met de laagste score. Bij Afrika is te zien dat hier elk land een iet wat lagere
+                score heeft in vergelijking met de andere continenten. Wat opvalt over de tijd is dat vooral in Azië en
+                Afrika de scores slechter of beter worden. De andere continenten zijn vrij stabiel. Ook valt op dat
+                vooral in Afrika en in het Midden-Oosten gegevens missen. Meer informatie over waarom dit is kan
+                gevonden worden bij “Achtergrond”.</p>
         </div>
     </div>
-    <!--TODO: breng deze 'controls' div nog in bovenstaande container-->
-    <!--TODO: button om naar "landen" pagina te gaan per kadertje-->
     <div class=separator-bar></div>
     <div id="position_plot" class="plot-container"></div>
+    <p class="tussentekst">
+        <!-- TODO: jan tekst bij grafiek position plot -->
+    </p>
 </div>
 
-<!--pagina voor alle samengevatte informatie per land-->
-<!--mijn idee is om hier een zoekbalk te zetten waarmee je een of meerdere landen kan selecteren
-en dat dan de info zoals op WHR staat getoond wordt; ook dacht ik om op de wereldkaart een button
-te zetten in het kotje dat opent als je op een land klikt zodat je verder kan klikken naar alle info-->
+
+
 <div id="landen" class="page">
     <p class="tussentekst">Op deze pagina vindt u alle informatie die beschikbaar is over de landen in de dataset over
         de jaren 2019 - 2025. Via de knoppen kan er gewisseld worden om cijfers over de jaren heen te zien. Hierbij
@@ -174,13 +197,26 @@ te zetten in het kotje dat opent als je op een land klikt zodat je verder kan kl
     </div>
 </div>
 
-<!--dit is een functie die ervoor zorgt dat enkel de pagina zichtbaar is op welke je geklikt hebt-->
+
 <script>
     function showPage(pageId) {
+        //wissel van pagina
         document.querySelectorAll(".page").forEach(page => {
             page.classList.remove("active");
         });
         document.getElementById(pageId).classList.add("active");
+
+        //reset alle knoppen
+        document.querySelectorAll(".page-button").forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        //activeer de geselecteerde knop
+        document.querySelectorAll(".page-button").forEach(btn => {
+            if (btn.getAttribute("onclick")?.includes(pageId)) {
+                btn.classList.add("active");
+            }
+        });
     }
 </script>
 
