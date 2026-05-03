@@ -75,6 +75,22 @@ function renderPositionPlot(data) {
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+    const startDate = new Date('2019-12-01');
+    const endDate = new Date('2023-06-30');
+
+    const startX = xScale(startDate);
+    const endX = xScale(endDate);
+
+    const shadeWidth = endX - startX;
+
+    chart.append("rect")
+        .attr("x", startX)
+        .attr("y", 0)
+        .attr("width", shadeWidth)
+        .attr("height", height)
+        .style("fill", "rgba(255, 0, 0, 0.1)")
+        .attr("opacity", 0.4);
+
     const linesGroup = chart.append("g");
 
     chart.append("g")

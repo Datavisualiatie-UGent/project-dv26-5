@@ -269,7 +269,7 @@ td {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
     overflow: auto;
     display: flex;
-    max-width: 80ch;
+    max-width: 100ch;
     margin: 20px auto;
 }
 

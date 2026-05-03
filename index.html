@@ -129,7 +129,7 @@
                 <input type="range" id="year_slider">
             </div>
         </div>
-        <div class="right">
+        <div class="right" style="max-width: 30ch">
             <p class="tussentekst">Op deze kaart is een duidelijk verschil te zien over continenten heen. Er is te
                 zien dat de hogere life evaluation scores te vinden zijn in Europa, Amerika en Oceanië. In het
                 Midden-Oosten zijn er zowel hogere als lagere scores. Afghanistan is, over alle landen heen en ook
@@ -141,23 +141,18 @@
         </div>
     </div>
     <div class=separator-bar></div>
-    <div class="plot-container">
-        <div class="left">
-            <div id="scatter_plot"></div>
-        </div>
-        <div class="right">
-            <p class="tussentekst">Wat maakt mensen gelukkig? Is het economische welvaart of vrijheid? Per land wordt in
-                dit onderzoek de bijdrage (in %) van elke factor over de verschillende jaren uitgewerkt ten opzichte van
-                de life evaluation score. We wijzen graag op enkele globale trends. Economische welvaart (uitgedrukt door
-                BBP per capita) werd in de afgelopen jaren steeds belangrijker, en in 2025 kon men voor veel landen
-                gemakkelijk 30% van de levensevaluatiescore toeschrijven aan het GDP/BBP. Sociale ondersteuning fluctueerde
-                echter sterk van jaar tot jaar. Tijdens 2020 en 2021 droeg deze factor erg weinig bij aan de life
-                evaluation scores, zeker juist aan het begin van de coronacrisis. Op een vergelijkbare wijze zien we
-                dat de bijdrage van mondiale gezondheid het hoogst was in 2019 en 2025, maar aanzienlijk lager was in
-                de jaren die ertussen lagen.
-            </p>
-        </div>
+    <div id="scatter_plot" class="plot-container">
     </div>
+    <p class="tussentekst">Wat maakt mensen gelukkig? Is het economische welvaart of vrijheid? Per land wordt in
+        dit onderzoek de bijdrage (in %) van elke factor over de verschillende jaren uitgewerkt ten opzichte van
+        de life evaluation score. We wijzen graag op enkele globale trends. Economische welvaart (uitgedrukt door
+        BBP per capita) werd in de afgelopen jaren steeds belangrijker, en in 2025 kon men voor veel landen
+        gemakkelijk 30% van de levensevaluatiescore toeschrijven aan het GDP/BBP. Sociale ondersteuning fluctueerde
+        echter sterk van jaar tot jaar. Tijdens 2020 en 2021 droeg deze factor erg weinig bij aan de life
+        evaluation scores, zeker juist aan het begin van de coronacrisis. Op een vergelijkbare wijze zien we
+        dat de bijdrage van mondiale gezondheid het hoogst was in 2019 en 2025, maar aanzienlijk lager was in
+        de jaren die ertussen lagen.
+    </p>
     <div class=separator-bar></div>
     <div id="position_plot" class="plot-container"></div>
     <p class="tussentekst">Welke landen hebben nu de hoogste life evaluation? Van 2019 tot 2025 was Finland keer op keer
