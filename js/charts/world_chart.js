@@ -156,9 +156,10 @@ function renderWorldChart(){
             const otherPgGroup = popupGroup.append("a")
                 .attr("transform", "translate(0, 0)")
                 .style("cursor", "pointer")
-                .on("click", (e) => {
+                .on("click", () => {
                     const url = new URL(window.location);
                     url.searchParams.set("country", idToCsvName[d.id]);
+                    url.searchParams.set("year", currentYear);
 
                     window.history.pushState({}, '', url);
                     showPage('landen');
@@ -205,7 +206,7 @@ function renderWorldChart(){
                 .style("font-size", "14px")
                 .style("font-weight", "bold")
                 .style("pointer-events", "none")
-                .text("See More    →");
+                .text("Hier meer    →");
 
         }
 
@@ -304,8 +305,6 @@ function renderWorldChart(){
         });
 
 
-
-
         csvData.forEach(d => {
             let rawName = d["Country name"];
             let year = d["Year"];
@@ -356,7 +355,6 @@ function renderWorldChart(){
 
 
 
-
     function updateMap(selectedYear) {
         currentYear = selectedYear
 
@@ -396,12 +394,6 @@ function renderWorldChart(){
         const name = idToName[d.id] || "Unknown";
         return `${name}`;
     }
-
-
-
-
-
-
 
 
     //Colors
@@ -447,9 +439,6 @@ function renderWorldChart(){
 
     // Legend
 
-
-
-
     const legend = svg_base.append("g")
         .attr("transform", "translate(10, 370)");
 
@@ -467,8 +456,6 @@ function renderWorldChart(){
         .attr("width", 200)
         .attr("height", 10)
         .style("fill", "url(#legend-gradient)");
-
-
 
 
     //Schadow

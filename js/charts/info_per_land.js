@@ -114,12 +114,12 @@ function createYearButtons() {
         .on("click", function(event, year) {
             selectedYear = year;
 
-            //reset de knoppen
+            sessionStorage.setItem("selectedYear", selectedYear);   //slaat huidig jaar op waar op geklikt is
+
             d3.selectAll(".year-btn-land")
                 .classed("year-btn-active", false)
                 .classed("year-btn-inactive", true);
 
-            //activeer degene waarop geklikt is
             d3.select(this)
                 .classed("year-btn-active", true)
                 .classed("year-btn-inactive", false);
@@ -573,9 +573,19 @@ function norm(str) {
 
 function handleCountryChange() {
     const params = new URLSearchParams(window.location.search);
+
     const countryParam = params.get("country");
-    if (!countryParam)  {console.log("error")
-        return}
+    const yearParam = params.get("year");
+
+    if (!countryParam) return;
+
+    if (yearParam) {
+        selectedYear = +yearParam;  //zorgt ervoor dat het standaard jaar wordt genegeerd en we het huidige nemen
+        sessionStorage.setItem("selectedYear", selectedYear);
+    } else {
+        const saved = sessionStorage.getItem("selectedYear");
+        if (saved) selectedYear = +saved;
+    }
 
     selectedCountry = countryParam;
 
@@ -583,9 +593,11 @@ function handleCountryChange() {
         c && countryParam &&
         norm(c) === norm(countryParam)
     );
+
+    selectCountry(matchedCountry);
+
     updateBackContainer();
-    console.log(matchedCountry)
-    updateCountryPanelByYear(matchedCountry , selectedYear );
+    updateCountryPanelByYear(matchedCountry, selectedYear);
 }
 
 function updateBackContainer() {
