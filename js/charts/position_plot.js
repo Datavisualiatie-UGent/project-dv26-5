@@ -55,11 +55,11 @@ function renderPositionPlot(data) {
         .domain([153,1])
         .range([height, 0]);
 
-    const controls = container
+    const wrapper = container
+        .append("div");
+
+    const controls = wrapper
         .append("div")
-        .style("margin-right", "20px")
-        .style("display", "flex")
-        .style("gap", "10px")
         .attr("class", "sidebar");
 
     const continentControls = controls.append("div");
@@ -227,6 +227,20 @@ function renderPositionPlot(data) {
         .style("height", "200px")
         .style("overflow-y", "scroll")
         .style("padding", "5px");
+
+    const coronaNote = wrapper.append("div")
+        .append("div")
+        .attr("class", 'extra-info-div')
+        .attr("class", "sidebar");
+
+    coronaNote.append("img")
+        .attr("src", "images/corona.png")
+        .attr("class", "extra-info-icon");
+
+    coronaNote.append("div")
+        .attr("class", "extra-info-text")
+        .append("p")
+        .text("Kleurgebruik duidt de COVID-19 periode aan.");
 
     let selectedCountries = new Set(["Belgium", "Afghanistan", "New Zealand", "Vietnam",
         "United States"]);

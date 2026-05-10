@@ -155,7 +155,7 @@ function renderPlots(mapped) {
     sidebar.append("div")
         .text("Y-as")
         .style("font-weight", "bold")
-        .style("font-size", "10px")
+        .style("font-size", "15px")
         .style("text-transform", "uppercase")
         .style("color", "#555");
 
@@ -163,7 +163,7 @@ function renderPlots(mapped) {
         .style("display", "flex")
         .style("gap", "6px")
         .style("flex-wrap", "wrap")
-        .style("font-size", "10px")
+        .style("font-size", "15px")
         .style("flex-direction", "column");
 
     sidebar.append("div")
@@ -180,6 +180,7 @@ function renderPlots(mapped) {
         .enter()
         .append("button")
         .attr("class", "year-btn selected")
+        .style("font-size", "15px")
         .style("background-color", d => allColors(d))
         .text(d => d)
         .on("click", function (event, d) {

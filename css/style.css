@@ -55,6 +55,7 @@ body {
     margin: 10px 20px 0 0 ;
     background: #fafafa;
     float: left;
+    width: 90%;
 }
 
 #scatter_plot .sidebar {
@@ -68,6 +69,7 @@ body {
     margin: 10px 20px 0 0 ;
     background: #fafafa;
     float: left;
+    width: 20%;
 }
 
 .tooltip {
@@ -362,4 +364,21 @@ td {
 .year-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.extra-info-div {
+    align-items: center;
+}
+
+.extra-info-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    margin: 5px 5px 5px 5px;
+}
+
+.extra-info-text p {
+    margin: 5px 0 0 5px;
+    font-size: 1em;
+    line-height: 1.4;
 }

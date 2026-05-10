@@ -212,12 +212,12 @@ function renderLinePlot(data) {
         .domain([0,10])
         .range([height, 0]); //omdat de y-as omgedraaid staat, moet 0 achteraan
 
+    const wrapper = container
+        .append("div");
+
     //voor layout selectie - grafiek - legende te krijgen
-    const controls = container
+    const controls = wrapper
         .append("div")
-        .style("margin-right", "20px")
-        .style("display", "flex")
-        .style("gap", "10px")
         .attr("class", "sidebar");
 
     const continentControls = controls.append("div");
@@ -387,6 +387,20 @@ function renderLinePlot(data) {
         .style("height", "200px")
         .style("overflow-y", "scroll")
         .style("padding", "5px");
+
+    const coronaNote = wrapper.append("div")
+        .append("div")
+        .attr("class", 'extra-info-div')
+        .attr("class", "sidebar");
+
+    coronaNote.append("img")
+        .attr("src", "images/corona.png")
+        .attr("class", "extra-info-icon");
+
+    coronaNote.append("div")
+        .attr("class", "extra-info-text")
+        .append("p")
+        .text("Kleurgebruik duidt de COVID-19 periode aan.");
 
     //landen die al te zien zijn als je plot opent
     let selectedCountries = new Set(["Belgium", "Afghanistan", "New Zealand", "Vietnam",
